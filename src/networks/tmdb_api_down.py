@@ -1,50 +1,60 @@
 import requests
 import json
 import time
+import os 
 
-# Sustituye esto por tu clave real de TMDB
-API_KEY = "TU_API_KEY_AQUI"
+API_KEY = "75a85e69010ab0deb4646e3866d31631"
 BASE_URL = "https://api.themoviedb.org/3"
 
-def obtener_series(paginas=5):
-    """
-    Descarga el catálogo de series populares de TMDB.
-    """
-    todas_las_series = []
+def descargar_series_masivo(paginas_totales=8000):
+    print("Iniciando descarga masiva...")
     
-    print(f"Iniciando la descarga de {paginas} páginas de series...")
-
-    for pagina in range(1, paginas + 1):
-        # Endpoint para descubrir series de TV ordenadas por popularidad
-        url = f"{BASE_URL}/discover/tv"
-        parametros = {
-            "api_key": API_KEY,
-            "language": "es-ES", # Para tener sinopsis y títulos en español
-            "sort_by": "popularity.desc",
-            "page": pagina
-        }
-
-        respuesta = requests.get(url, params=parametros)
-
-        if respuesta.status_code == 200:
-            datos = respuesta.json()
-            resultados = datos.get("results", [])
-            todas_las_series.extend(resultados)
-            print(f"Página {pagina} descargada con éxito ({len(resultados)} series).")
-        else:
-            print(f"Error en la página {pagina}: {respuesta.status_code}")
-            break
+    # 2. Ruta de destino y creamos las carpetas si no existen
+    carpeta_destino = "src/data/raw/tmdb/series"
+    os.makedirs(carpeta_destino, exist_ok=True) 
+    
+    # 3. Construimos la ruta completa del archivo
+    ruta_archivo = os.path.join(carpeta_destino, 'catalogo_series_tmdb.jsonl')
+    
+    # Usamos la nueva ruta al abrir el archivo
+    with open(ruta_archivo, 'w', encoding='utf-8') as archivo:
+        
+        pagina_actual = 1
+        
+        while pagina_actual <= paginas_totales:
+            url = f"{BASE_URL}/discover/tv"
+            parametros = {
+                "api_key": API_KEY, 
+                "language": "es-ES", 
+                "page": pagina_actual,
+                "sort_by": "popularity.desc"
+            }
             
-        # Buenas prácticas: pausa de medio segundo para no saturar la API
-        time.sleep(0.5) 
+            respuesta = requests.get(url, params=parametros)
+            
+            if respuesta.status_code == 200:
+                datos = respuesta.json()
+                resultados = datos.get("results", [])
+                
+                if not resultados:
+                    print("No hay más series disponibles. Fin de la descarga.")
+                    break
+                    
+                for serie in resultados:
+                    archivo.write(json.dumps(serie, ensure_ascii=False) + '\n')
+                    
+                print(f"Página {pagina_actual} guardada correctamente en {carpeta_destino}")
+                pagina_actual += 1
+                
+                time.sleep(0.25) 
+                
+            elif respuesta.status_code == 429:
+                print("\n⚠️ Límite de la API alcanzado. Esperando 10 segundos...")
+                time.sleep(10)
+                
+            else:
+                print(f"\n❌ Error fatal {respuesta.status_code} en la página {pagina_actual}.")
+                break
 
-    return todas_las_series
-
-# Ejecutamos la función (ejemplo: descargamos 5 páginas = 100 series)
-catalogo_series = obtener_series(paginas=5)
-
-# Guardamos los datos en un archivo JSON local
-with open('catalogo_series_tmdb.json', 'w', encoding='utf-8') as archivo:
-    json.dump(catalogo_series, archivo, ensure_ascii=False, indent=4)
-
-print(f"\n¡Proceso completado! Se han guardado {len(catalogo_series)} series en 'catalogo_series_tmdb.json'.")
+# Ejecutamos la prueba con un par de páginas para verificar que crea las carpetas
+descargar_series_masivo(paginas_totales=5)
