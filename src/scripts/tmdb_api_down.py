@@ -64,9 +64,9 @@ def descargar_series_por_mes(ano_inicio=1990, ano_fin=2025):
                     else:
                         print(f"Error HTTP {respuesta.status_code} en página {pagina_actual}. Saltando...")
                         break
-                    
+
 def descargar_peliculas_por_mes(ano_inicio=1990, ano_fin=2025):
-    print("Iniciando extracción masiva de peliculas mes a mes ...")
+    print("Iniciando extracción masiva de peliculas mes a mes (Tolerancia a fallos: Activada)...")
     
     carpeta_destino = "src/data/raw/tmdb/movies" 
     os.makedirs(carpeta_destino, exist_ok=True)
@@ -79,11 +79,12 @@ def descargar_peliculas_por_mes(ano_inicio=1990, ano_fin=2025):
                 _, ultimo_dia = calendar.monthrange(ano, mes)
                 
                 fecha_inicio = f"{ano}-{mes:02d}-01"
-                fecha_fin = f"{ano}-{mes:02d}-{ultimo_dia}"
+                fecha_fin = f"{ano}-{mes:02d}-{ultimo_dia:02d}"
                 
+                print(f"\n--- Descargando estrenos del {fecha_inicio} al {fecha_fin} ---")
                 pagina_actual = 1
                 
-                while True:
+                while pagina_actual <= 500:
                     url = f"{BASE_URL}/discover/movie" 
                     
                     parametros = {
@@ -112,11 +113,12 @@ def descargar_peliculas_por_mes(ano_inicio=1990, ano_fin=2025):
                         time.sleep(0.25) 
                         
                     elif respuesta.status_code == 429:
-                        print("Límite de API. Esperando 10 segundos...")
+                        print("Límite de API. Esperando 10 segundos para descongestionar...")
                         time.sleep(10)
                     else:
-                        print(f"Error HTTP {respuesta.status_code}. Saltando...")
+                        print(f"Error HTTP {respuesta.status_code} en página {pagina_actual}. Saltando...")
                         break
-                    
+
 if __name__ == "__main__":
-    descargar_peliculas_por_mes(ano_inicio=2021, ano_fin=2025)
+    # descargar_series_por_mes(ano_inicio=1990, ano_fin=2025)
+    descargar_peliculas_por_mes(ano_inicio=1990, ano_fin=2025)

@@ -211,3 +211,10 @@ __marimo__/
 src/data/raw/movielens/*.csv
 
 src/data/raw/tmdb/series/*.jsonl
+src/data/raw/tmdb/movies/*.jsonl
+
+src/data/clean/tmdb_movies_limpio.csv
+
+src/data/ready/dataset_final_movies.csv
+
+src/data/raw/tmdb/movies/catalogo_peliculas_tmdb.csv
