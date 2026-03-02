@@ -75,6 +75,20 @@ CREATE DATABASE streaming_db;
 desde el workbench ejecutar el script 
 src\data\scripts_sql\create_database.sql
 
+
+CONECTAR A BBDD LOCAL 
+- instalar conector:
+    pip install mysql-connector-python
+
+## PREPARACIÓN BACKEND
+Usamos fastapi para montar un backend
+    pip install fastapi uvicorn requests
+
+## PREPARACIÓN FRONTEND
+Usamos streamlit
+    pip install streamlit
+    
+
 ## VECTORIZACIÓN
 
 ## MODELO
