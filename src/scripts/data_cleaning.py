@@ -111,9 +111,52 @@ def limpiar_tendencias_trakt(tipo="movies"):
         
     df.to_csv(ruta_salida, index=False)
     print(f"TRAKT limpios: {filas_iniciales} brutos -> {len(df)} limpios. -> {ruta_salida}\n")
+    
+#  LIMPIEZA DE RAITINGS TRAMOVILENSKT 
+def limpiar_movielens():
+    print("Data Cleaning MOVIELENS...")
+          
+    ruta_links_raw = "src/data/raw/movielens/links.csv"
+    ruta_ratings_raw = "src/data/raw/movielens/ratings.csv"
+    
+    try:
+        df_links = pd.read_csv(ruta_links_raw)
+        df_ratings = pd.read_csv(ruta_ratings_raw)
+        
+        print(f"\n Auditoria de datos (Links):")
+        print(f"  -> Total de filas en bruto: {len(df_links)}")
+        sin_tmdbid = df_links['tmdbId'].isna().sum()
+        print(f"  -> Filas sin tmdbId: {sin_tmdbid}")
+        print(f"  -> Filas esperadas tras la limpieza: {len(df_links) - sin_tmdbid}")
+        
+        print(f"\n Auditoria de datos (Ratings):")
+        print(f"  -> Total de filas en bruto: {len(df_ratings)}")
+        duplicados_ratings = df_ratings.duplicated(subset=['userId', 'movieId']).sum()
+        print(f"  -> Duplicados exactos (mismo usuario y pelicula): {duplicados_ratings}")
+        print(f"  -> Filas esperadas tras la limpieza: {len(df_ratings) - duplicados_ratings}")
+        
+        print(f"\n Aplicando limpieza de datos...")
+        
+        # Limpieza de Links
+        df_links = df_links.dropna(subset=['tmdbId'])
+        df_links['tmdbId'] = df_links['tmdbId'].astype(int)
+        df_links.to_csv("src/data/clean/links_limpio.csv", index=False)
+        
+        # Limpieza de Ratings
+        df_ratings = df_ratings.drop_duplicates(subset=['userId', 'movieId'])
+        df_ratings = df_ratings[['userId', 'movieId', 'rating']]
+        df_ratings.to_csv("src/data/clean/ratings_limpio.csv", index=False)
+        
+        print(f"MOVIELENS limpios:")
+        print(f"  -> Links: {len(df_links)} filas guardadas en src/data/clean/links_limpio.csv")
+        print(f"  -> Ratings: {len(df_ratings)} filas guardadas en src/data/clean/ratings_limpio.csv\n")
+        
+    except FileNotFoundError:
+        print("Error: No se encontraron los archivos crudos de MovieLens.")
 
 if __name__ == "__main__":
     limpiar_catalogo_puro("shows")
     limpiar_catalogo_puro("movies")
     limpiar_tendencias_trakt("shows")
     limpiar_tendencias_trakt("movies")
+    limpiar_movielens()

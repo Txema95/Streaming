@@ -48,30 +48,32 @@ def unificar_capa_oro(tipo="movies"):
 
 
 def preparar_matriz_ia():
-    print(" Preparando Matriz de Interacciones (MovieLens)...")
-    ruta_links = "..."
-    ruta_ratings = "..."
-    ruta_salida = "src/data/ready/ratings_finales.csv"
+    print("Unificando Matriz IA de MovieLens...")
+    
+    ruta_links_clean = "src/data/clean/links_limpio.csv"
+    ruta_ratings_clean = "src/data/clean/ratings_limpio.csv"
+    ruta_salida = "src/data/ready/ratings_finales_ia.csv"
     
     try:
-        df_links = pd.read_csv(ruta_links)
-        df_ratings = pd.read_csv(ruta_ratings)
+        df_links = pd.read_csv(ruta_links_clean)
+        df_ratings = pd.read_csv(ruta_ratings_clean)
         
-        # INNER JOIN: Cruzamos valoraciones con links para obtener tmdbId
+        # INNER JOIN: Cruzamos valoraciones con los links para conseguir el tmdbId
         df_ia = pd.merge(df_ratings, df_links[['movieId', 'tmdbId']], on='movieId', how='inner')
+        
+        # Renombramos para estandarizar con el resto de la base de datos
         df_ia = df_ia.rename(columns={'tmdbId': 'tmdb_id'})
         
-        # Filtramos para quedarnos solo con lo necesario para entrenar la IA
+        # Reordenamos columnas (userId, tmdb_id, rating)
         df_ia = df_ia[['userId', 'tmdb_id', 'rating']]
-        df_ia = df_ia.dropna(subset=['tmdb_id'])
-        df_ia['tmdb_id'] = df_ia['tmdb_id'].astype(int)
         
         df_ia.to_csv(ruta_salida, index=False)
-        print(f" Raitings de MovieLens listo en -> {ruta_salida}\n")
+        print(f"Matriz IA lista para entrenar. Guardado en: {ruta_salida}\n")
         
     except FileNotFoundError:
-        print(" Faltan archivos crudos de MovieLens")
+        print("Error: Faltan archivos limpios de MovieLens. Ejecuta data_cleaning.py primero.")
 
 if __name__ == "__main__":
-    unificar_capa_oro("shows")
-    unificar_capa_oro("movies")
+    # unificar_capa_oro("shows")
+    # unificar_capa_oro("movies")
+    preparar_matriz_ia()
