@@ -1,0 +1,407 @@
+tmdb_id,titulo,ano,nota_media,total_votos,certificacion,espectadores_live,reproducciones_totales,es_tendencia,es_popular,es_historico_vistas
+224372,A Knight of the Seven Kingdoms,2026,8.31834,2802,TV-MA,23694,131042,True,True,True
+245927,Paradise,2025,7.70689,3804,TV-MA,5913,23973,True,False,True
+129552,The Night Agent,2023,7.70346,7429,TV-MA,5259,105219,True,False,True
+250307,The Pitt,2025,8.76832,5430,TV-MA,4629,94034,True,False,True
+79744,The Rookie,2018,8.01278,6649,TV-14,4592,86373,True,False,True
+1434,Family Guy,1999,7.7214,21967,TV-14,3164,90814,True,False,True
+60694,Last Week Tonight with John Oliver,2014,8.47188,6722,TV-MA,3110,27501,True,False,True
+106379,Fallout,2024,8.10373,17989,TV-MA,2858,59301,True,False,True
+136311,Shrinking,2023,8.04913,5068,TV-MA,2042,51410,True,False,True
+116799,The Lincoln Lawyer,2022,8.05917,4411,TV-MA,1900,58759,True,False,True
+90812,Industry,2020,7.28502,1242,TV-MA,1780,15454,True,False,True
+198102,Hijack,2023,7.49868,4544,TV-MA,1612,37609,True,False,True
+1399,Game of Thrones,2011,8.89127,145090,TV-MA,1577,71760,True,False,True
+66732,Stranger Things,2016,8.44115,73465,TV-14,1514,49988,True,False,True
+456,The Simpsons,1989,8.23551,24483,TV-14,1432,108459,True,False,True
+1433,American Dad!,2005,7.51178,9680,TV-14,1419,45196,True,False,True
+62705,Married at First Sight (AU),2015,6.25957,235,N/A,1415,21941,True,False,True
+1418,The Big Bang Theory,2007,7.85394,64913,TV-14,1369,98366,True,False,True
+223530,Star Trek: Starfleet Academy,2026,5.67213,549,TV-14,1204,23042,True,True,True
+91239,Bridgerton,2020,7.72625,8190,TV-MA,1201,26084,True,False,True
+80748,FBI,2018,7.47784,2053,TV-14,1150,13654,True,False,True
+157741,Landman,2024,8.22186,4300,TV-MA,1132,23452,True,False,True
+1668,Friends,1994,8.41307,48340,TV-14,1116,71148,True,False,True
+128904,Dark Winds,2022,7.67479,1519,TV-MA,1106,9972,True,False,True
+1421,Modern Family,2009,8.24826,28821,TV-PG,1103,62754,True,False,True
+213306,Cross,2024,7.1492,1937,TV-MA,1065,25329,True,False,True
+2316,The Office,2005,8.63555,35890,TV-14,1059,69458,True,False,True
+89456,Primal,2019,8.4375,1664,TV-14,1043,0,True,False,False
+291339,Memory of a Killer,2026,6.85714,105,TV-14,968,0,True,False,False
+241372,56 Days,2026,7.05096,157,TV-MA,962,17559,True,False,True
+1416,Grey's Anatomy,2005,7.86506,16941,TV-14,946,59228,True,False,True
+225171,Pluribus,2025,8.03184,7790,TV-MA,928,18174,True,True,True
+61859,The Night Manager,2016,7.94387,6681,TV-MA,924,17346,True,False,True
+226637,High Potential,2024,7.59489,2777,TV-14,917,19509,True,False,True
+287231,Vanished,2026,5.94853,136,N/A,908,0,True,False,False
+73319,90 Day Fiancé: Before The 90 Days,2017,6.3006,336,TV-14,865,0,True,False,False
+1396,Breaking Bad,2008,9.24369,114998,TV-MA,855,43663,True,False,True
+95479,Jujutsu Kaisen,2020,8.46913,6998,TV-14,816,29484,True,False,True
+99353,Love is Blind,2020,6.41446,1549,TV-MA,800,27534,True,False,True
+270600,The 'Burbs,2026,6.52174,138,TV-MA,796,18470,True,False,True
+289560,CIA,2026,7.0,13,N/A,785,0,True,False,False
+32726,Bob's Burgers,2011,8.06724,8997,TV-14,784,41248,True,False,True
+198178,Wonder Man,2026,7.36879,1589,TV-14,774,17748,True,True,True
+233079,How to Get to Heaven from Belfast,2026,7.36216,185,TV-MA,764,14427,True,False,True
+273160,The Beauty,2026,6.38938,226,TV-MA,762,15361,True,False,True
+215943,The Traitors,2023,7.36913,596,TV-14,754,17933,True,False,True
+82728,Bluey,2018,8.47542,1607,TV-Y,735,51296,True,False,True
+2190,South Park,1997,8.42687,22665,TV-MA,734,51162,True,False,True
+1398,The Sopranos,1999,9.10935,18848,TV-MA,718,22592,True,False,True
+1622,Supernatural,2005,8.33755,27507,TV-14,691,49590,True,False,True
+208569,Will Trent,2023,7.47544,1527,TV-14,672,19535,True,False,True
+243754,Love Island: All Stars,2024,5.93671,79,N/A,660,12103,True,False,True
+81144,The Neighborhood,2018,7.28012,971,TV-PG,652,0,True,False,False
+60059,Better Call Saul,2015,8.7965,33646,TV-MA,639,31597,True,False,True
+2710,It's Always Sunny in Philadelphia,2005,8.60687,12609,TV-MA,637,25355,True,False,True
+94997,House of the Dragon,2022,8.09927,18021,TV-MA,632,15763,True,False,True
+125935,Abbott Elementary,2021,7.94872,3003,TV-PG,624,15733,True,False,True
+48891,Brooklyn Nine-Nine,2013,8.37216,30124,TV-14,604,39901,True,False,True
+130464,Tell Me Lies,2022,7.30014,713,TV-MA,600,19055,True,False,True
+1100,How I Met Your Mother,2005,8.0381,45953,TV-14,573,41550,True,False,True
+117465,Hell's Paradise,2023,7.90162,1728,TV-14,567,0,True,False,False
+60625,Rick and Morty,2013,8.67065,36885,TV-14,565,29107,True,False,True
+2734,Law & Order: Special Victims Unit,1999,7.94113,4943,TV-14,563,36830,True,False,True
+131142,Love Story,2026,6.54286,35,TV-MA,563,9029,True,False,True
+262262,Under Salt Marsh,2026,6.96,50,N/A,562,0,True,False,False
+235685,The Pendragon Cycle: Rise of the Merlin,2026,6.0463,108,TV-14,556,10825,True,False,True
+61662,Schitt's Creek,2015,8.19452,7804,TV-14,545,21746,True,False,True
+37854,One Piece,1999,8.87567,8397,TV-14,544,100745,True,False,True
+125506,Below Deck Down Under,2022,7.27372,274,TV-14,542,0,True,False,False
+1408,House,2004,8.51044,33945,TV-14,538,35233,True,False,True
+289567,DMV,2025,6.40132,152,TV-PG,535,0,True,False,False
+4556,Scrubs,2001,8.33405,15240,TV-14,525,28152,True,False,True
+1405,Dexter,2006,8.39757,44616,TV-MA,524,34693,True,False,True
+209867,Frieren: Beyond Journey's End,2023,9.03991,3558,TV-14,522,16148,True,False,True
+202208,The Artful Dodger,2023,7.8932,1030,TV-14,513,12802,True,False,True
+103913,Tehran,2020,7.61283,1325,TV-MA,500,9516,True,False,True
+262793,PONIES,2026,7.29538,325,TV-MA,498,8622,True,True,True
+8592,Parks and Recreation,2009,8.51715,20344,TV-14,487,23261,True,False,True
+301507,Heated Rivalry,2025,8.79419,1720,TV-MA,482,8876,True,True,True
+312693,Small Prophets,2026,8.02632,76,N/A,478,0,True,False,False
+44006,Chicago Fire,2012,8.18664,4447,TV-14,477,25226,True,False,True
+4629,Stargate SG-1,1997,8.68984,9766,TV-PG,474,19243,True,False,True
+95480,Slow Horses,2022,8.35465,7537,TV-MA,474,11846,True,False,True
+201289,The Last Thing He Told Me,2023,6.62389,904,TV-MA,473,0,True,False,False
+615,Futurama,1999,8.5379,21792,TV-14,466,26550,True,False,True
+240459,Spartacus: House of Ashur,2025,7.35942,1099,TV-MA,462,8679,True,True,True
+61865,When Calls the Heart,2014,7.74398,457,TV-G,459,0,True,False,False
+2004,Malcolm in the Middle,2000,8.16175,7499,TV-PG,448,18464,True,False,True
+259731,HIS & HERS,2026,7.61222,4041,TV-MA,448,9316,True,True,True
+312423,Reality Check: Inside America's Next Top Model,2026,6.94667,150,TV-MA,447,10986,True,False,True
+2750,Silent Witness,1996,7.72749,411,TV-14,443,11393,True,False,True
+34634,Gold Rush,2010,7.62855,1233,TV-PG,438,16897,True,False,True
+73586,Yellowstone,2018,8.38823,9618,TV-MA,435,15561,True,False,True
+58841,Chicago P.D.,2014,8.17709,3885,TV-14,433,20736,True,False,True
+95396,Severance,2022,8.63426,20810,TV-MA,431,14154,True,False,True
+60574,Peaky Blinders,2013,8.58909,22594,TV-MA,429,15574,True,False,True
+254071,Steal,2026,7.19392,1217,N/A,429,0,True,True,False
+124364,FROM,2022,7.9453,9177,TV-MA,427,13539,True,False,True
+259856,Salvador,2026,7.67163,1611,N/A,415,0,True,True,False
+65300,The Real Housewives of Potomac,2016,6.22857,210,TV-14,410,0,True,False,False
+249042,Adolescence,2025,7.72113,12963,TV-MA,0,0,False,True,False
+247718,MobLand,2025,8.35848,6098,TV-MA,0,0,False,True,False
+157239,Alien: Earth,2025,7.4382,5890,TV-MA,0,0,False,True,False
+202555,Daredevil: Born Again,2025,7.7642,4682,TV-MA,0,0,False,True,False
+245703,Dept. Q,2025,7.99151,4591,TV-MA,0,0,False,True,False
+200875,IT: Welcome to Derry,2025,7.97683,4187,TV-MA,0,0,False,True,False
+248852,UNTAMED,2025,7.40178,4159,TV-MA,0,0,False,True,False
+241554,Murderbot,2025,7.44312,4105,TV-MA,0,0,False,True,False
+259909,Dexter: Resurrection,2025,8.59035,3752,TV-MA,0,0,False,True,False
+247767,The Studio,2025,7.77094,3008,TV-MA,0,0,False,True,False
+226362,The Eternaut,2025,7.17748,3037,TV-MA,0,0,False,True,False
+228305,Task,2025,7.8237,2819,TV-MA,0,0,False,True,False
+241609,Your Friends & Neighbors,2025,7.64299,2689,TV-MA,0,0,False,True,False
+250504,The Beast in Me,2025,7.6073,2684,TV-MA,0,0,False,True,False
+286801,Monster: The Ed Gein Story,2025,7.08345,2768,TV-MA,0,0,False,True,False
+242054,The Residence,2025,7.68966,2465,TV-MA,0,0,False,True,False
+243200,"Old Dog, New Tricks",2025,7.40573,2445,TV-MA,0,0,False,True,False
+114471,Ironheart,2025,5.82448,2729,TV-14,0,0,False,True,False
+280888,Two Graves,2025,7.4071,2142,TV-MA,0,0,False,True,False
+246386,All Her Fault,2025,7.68356,2032,TV-MA,0,0,False,True,False
+274979,The Crystal Cuckoo,2025,7.46146,2011,TV-MA,0,0,False,True,False
+249039,Black Rabbit,2025,7.41486,1938,TV-MA,0,0,False,True,False
+219760,The Terminal List: Dark Wolf,2025,7.60142,1829,TV-MA,0,0,False,True,False
+245648,Billionaires' Bunker,2025,6.85538,1860,TV-MA,0,0,False,True,False
+196890,Chief of War,2025,7.59502,1726,TV-MA,0,0,False,True,False
+246992,Sirens,2025,6.91196,1772,TV-MA,0,0,False,True,False
+221079,The Last Frontier,2025,7.19417,1715,TV-MA,0,0,False,True,False
+243316,The Four Seasons,2025,7.30409,1687,N/A,0,0,False,True,False
+229711,The Bondsman,2025,6.96181,1702,TV-MA,0,0,False,True,False
+235930,Devil May Cry,2025,7.38077,1602,TV-MA,0,0,False,True,False
+253372,The Institute,2025,7.03952,1594,TV-MA,0,0,False,True,False
+255859,Wayward,2025,6.66156,1631,TV-MA,0,0,False,True,False
+138505,Marvel Zombies,2025,7.02677,1569,TV-MA,0,0,False,True,False
+252193,Last Samurai Standing,2025,7.63934,1464,TV-MA,0,0,False,True,False
+250988,House of Guinness,2025,7.64605,1455,TV-MA,0,0,False,True,False
+244623,Running Point,2025,7.46662,1408,TV-MA,0,0,False,True,False
+241883,The Gardener,2025,7.07477,1431,N/A,0,0,False,True,False
+239826,Ballard,2025,7.5193,1373,TV-14,0,0,False,True,False
+279601,Man vs Baby,2025,6.88459,1421,TV-PG,0,0,False,True,False
+225647,Boots,2025,7.86801,1288,TV-MA,0,0,False,True,False
+248937,Hostage,2025,7.11506,1321,TV-MA,0,0,False,True,False
+282606,The Anatomy of a Moment,2025,7.65719,1266,N/A,0,0,False,True,False
+244244,Run Away,2026,7.38491,1286,TV-MA,0,0,False,True,False
+283133,Innate,2025,7.25101,1243,N/A,0,0,False,True,False
+229513,When No One Sees Us,2025,6.81983,1271,TV-MA,0,0,False,True,False
+248830,Stick,2025,7.36596,1175,TV-MA,0,0,False,True,False
+272418,Robin Hood,2025,7.38132,1167,TV-MA,0,0,False,True,False
+250505,Agatha Christie's Seven Dials,2026,6.77083,1200,TV-14,0,0,False,True,False
+253376,The Girlfriend,2025,7.19183,1126,TV-MA,0,0,False,True,False
+207411,Good American Family,2025,7.15932,1111,TV-MA,0,0,False,True,False
+254544,The Waterfront,2025,7.37786,1093,TV-MA,0,0,False,True,False
+277752,City of Shadows,2025,7.15514,1070,TV-MA,0,0,False,True,False
+219246,When Life Gives You Tangerines,2025,8.96578,906,TV-14,0,0,False,True,False
+215522,We Were Liars,2025,7.25871,1005,TV-14,0,0,False,True,False
+215995,Smoke,2025,6.5794,1058,TV-MA,0,0,False,True,False
+252000,Down Cemetery Road,2025,6.87379,1030,TV-MA,0,0,False,True,False
+256317,Countdown,2025,6.92871,1024,TV-MA,0,0,False,True,False
+209876,Dope Thief,2025,7.05378,1004,TV-MA,0,0,False,True,False
+262878,Secrets We Keep,2025,7.002,999,N/A,0,0,False,True,False
+271267,The Chair Company,2025,6.90844,972,TV-MA,0,0,False,True,False
+259615,Terra Alta,2025,7.01907,944,N/A,0,0,False,True,False
+227114,Butterfly,2025,6.99461,927,TV-MA,0,0,False,True,False
+255251,Sean Combs: The Reckoning,2025,7.44196,896,TV-MA,0,0,False,True,False
+253321,The Better Sister,2025,6.97059,918,TV-14,0,0,False,True,False
+247784,PULSE,2025,7.24499,898,TV-MA,0,0,False,True,False
+273916,Los sin nombre,2025,7.21973,892,N/A,0,0,False,True,False
+248716,Rotten Legacy,2025,6.89498,876,N/A,0,0,False,True,False
+245219,Death by Lightning,2025,7.63394,825,TV-MA,0,0,False,True,False
+259669,Olympo,2025,6.83565,864,TV-MA,0,0,False,True,False
+253941,The Paper,2025,6.92597,851,TV-14,0,0,False,True,False
+223300,The Abandons,2025,7.01073,839,TV-MA,0,0,False,True,False
+122781,Asterix & Obelix: The Big Fight,2025,7.73891,789,TV-PG,0,0,False,True,False
+256721,Gachiakuta,2025,7.89433,776,N/A,0,0,False,True,False
+207484,Outlander: Blood of My Blood,2025,7.90052,774,TV-MA,0,0,False,True,False
+247168,Chad Powers,2025,7.38327,801,TV-MA,0,0,False,True,False
+244447,The Hunting Wives,2025,7.34543,799,TV-MA,0,0,False,True,False
+275388,The Glass Dome,2025,6.96472,822,N/A,0,0,False,True,False
+244628,Long Bright River,2025,7.08744,812,TV-MA,0,0,False,True,False
+283367,American Manhunt: Osama bin Laden,2025,7.64721,754,TV-MA,0,0,False,True,False
+246929,Her Majesty,2025,6.92866,785,N/A,0,0,False,True,False
+284879,Las hijas de la criada,2025,7.4734,752,N/A,0,0,False,True,False
+259200,Perdiendo el juicio,2025,7.59514,741,N/A,0,0,False,True,False
+233256,The Stolen Girl,2025,6.80789,786,N/A,0,0,False,True,False
+241388,Eyes of Wakanda,2025,6.44499,809,TV-14,0,0,False,True,False
+287358,Yakarta,2025,7.50674,742,N/A,0,0,False,True,False
+240993,Ransom Canyon,2025,7.12814,757,TV-MA,0,0,False,True,False
+247619,Overcompensating,2025,7.54772,723,TV-MA,0,0,False,True,False
+280880,Rage (Furia),2025,6.78982,766,TV-MA,0,0,False,True,False
+243881,House of David,2025,7.14614,739,TV-14,0,0,False,True,False
+285801,Suspicious Minds,2025,6.84379,749,N/A,0,0,False,True,False
+257534,Devil in Disguise: John Wayne Gacy,2025,7.31497,708,TV-MA,0,0,False,True,False
+232342,Toxic Town,2025,7.51082,693,TV-MA,0,0,False,True,False
+288055,Star Wars: Tales of the Underworld,2025,7.03506,713,TV-PG,0,0,False,True,False
+235355,Resident Playbook,2025,8.20652,644,N/A,0,0,False,True,False
+256624,Talamasca: The Secret Order,2025,7.06734,698,TV-MA,0,0,False,True,False
+262920,The Asset,2025,7.08576,688,TV-MA,0,0,False,True,False
+241405,Dying for Sex,2025,7.36254,662,TV-MA,0,0,False,True,False
+284605,The Survivors,2025,7.00886,677,TV-MA,0,0,False,True,False
+284445,Takopi's Original Sin,2025,8.36184,608,N/A,0,0,False,True,False
+247756,The Monster of Florence,2025,6.38384,693,TV-MA,0,0,False,True,False
+245827,Harlan Coben's Lazarus,2025,6.74884,645,N/A,0,0,False,True,False
+219080,The Mighty Nein,2025,8.11724,580,TV-MA,0,0,False,True,False
+298234,aka Charlie Sheen,2025,7.68456,596,TV-MA,0,0,False,True,False
+240558,King & Conqueror,2025,7.09003,622,N/A,0,0,False,True,False
+231003,Lazarus,2025,6.92038,628,TV-14,0,0,False,True,False
+242907,Fate,2025,7.44082,583,N/A,0,0,False,True,False
+280878,El clan Olimpia,2025,7.0938,597,N/A,0,0,False,True,False
+294726,Amy Bradley Is Missing,2025,7.22712,590,TV-14,0,0,False,True,False
+273914,El Centro,2025,7.54371,572,N/A,0,0,False,True,False
+278274,Entrepreneurs,2025,7.00339,590,N/A,0,0,False,True,False
+271607,The Fragrant Flower Blooms with Dignity,2025,8.36911,531,TV-PG,0,0,False,True,False
+280893,Punto Nemo,2025,6.20656,610,N/A,0,0,False,True,False
+256150,Mar afuera,2025,7.35443,553,N/A,0,0,False,True,False
+280945,"Bon Appétit, Your Majesty",2025,7.91379,522,TV-14,0,0,False,True,False
+293756,Sin gluten,2025,7.07299,548,N/A,0,0,False,True,False
+280890,The Lady's Companion,2025,7.15683,542,TV-MA,0,0,False,True,False
+274980,La frontera,2025,7.19481,539,N/A,0,0,False,True,False
+232766,Mercy for None,2025,7.45524,525,TV-MA,0,0,False,True,False
+255752,Haunted Hotel,2025,7.82772,505,TV-14,0,0,False,True,False
+113959,Duster,2025,6.94238,538,TV-MA,0,0,False,True,False
+243217,Happy Face,2025,6.65631,515,TV-MA,0,0,False,True,False
+233686,Karma,2025,7.3299,485,N/A,0,0,False,True,False
+270734,Murdaugh: Death in the Family,2025,7.0874,492,TV-MA,0,0,False,True,False
+248416,The Twisted Tale of Amanda Knox,2025,7.10766,483,TV-MA,0,0,False,True,False
+243954,Motorheads,2025,7.63499,463,N/A,0,0,False,True,False
+260458,Adults,2025,7.16042,480,TV-MA,0,0,False,True,False
+127366,Splinter Cell: Deathwatch,2025,7.09916,474,TV-MA,0,0,False,True,False
+248330,Nine Bodies in a Mexican Morgue,2025,6.5,498,TV-MA,0,0,False,True,False
+278196,The Summer Hikaru Died,2025,7.86323,446,TV-14,0,0,False,True,False
+262352,The Assassin,2025,6.50615,488,N/A,0,0,False,True,False
+272059,TO BE HERO X,2025,8.13146,426,TV-14,0,0,False,True,False
+259823,Zero Day Attack,2025,7.10307,456,TV-14,0,0,False,True,False
+281371,Devil in the Family: The Fall of Ruby Franke,2025,7.11209,455,TV-MA,0,0,False,True,False
+273912,La canción,2025,7.24045,445,N/A,0,0,False,True,False
+232230,Lord of Mysteries,2025,8.20874,412,TV-14,0,0,False,True,False
+273247,The Lowdown,2025,7.13708,445,TV-MA,0,0,False,True,False
+255779,Bet,2025,6.99552,446,TV-MA,0,0,False,True,False
+250312,Caught,2025,6.9276,442,TV-MA,0,0,False,True,False
+292012,Disappeared,2025,6.90249,441,N/A,0,0,False,True,False
+246412,The Copenhagen Test,2025,7.22803,421,TV-MA,0,0,False,True,False
+256711,The Rainmaker,2025,7.39518,415,TV-14,0,0,False,True,False
+258962,Pubertat,2025,7.91184,397,N/A,0,0,False,True,False
+285084,Gone Girls: The Long Island Serial Killer,2025,7.2177,418,TV-MA,0,0,False,True,False
+289123,Fred and Rose West: A British Horror Story,2025,7.09069,419,TV-MA,0,0,False,True,False
+274776,Unfamiliar,2026,6.99525,421,TV-MA,0,0,False,True,False
+255570,This City Is Ours,2025,7.59055,381,N/A,0,0,False,True,False
+254013,Revival,2025,6.65926,405,TV-14,0,0,False,True,False
+244416,Malice,2025,6.35309,405,TV-MA,0,0,False,True,False
+225399,The Leopard,2025,7.08707,379,TV-MA,0,0,False,True,False
+259886,The War Between the Land and the Sea,2025,6.401,399,N/A,0,0,False,True,False
+274017,La agencia,2025,7.52778,360,N/A,0,0,False,True,False
+260823,From Old Country Bumpkin to Master Swordsman,2025,6.85146,377,TV-14,0,0,False,True,False
+258462,In the Mud,2025,7.26171,363,TV-MA,0,0,False,True,False
+237052,The Lost Station Girls,2025,7.08424,368,N/A,0,0,False,True,False
+216412,Side Quest,2025,5.78922,408,TV-MA,0,0,False,True,False
+248488,Tell Me Your Name,2025,6.64228,369,N/A,0,0,False,True,False
+284792,Medusa,2025,6.75482,363,TV-MA,0,0,False,True,False
+258348,Clevatess,2025,7.76596,329,N/A,0,0,False,True,False
+229236,Suspect: The Shooting of Jean Charles De Menezes,2025,7.38757,338,TV-MA,0,0,False,True,False
+242862,The Big Leap,2025,7.36716,335,N/A,0,0,False,True,False
+259854,Shades,2025,6.9152,342,N/A,0,0,False,True,False
+296549,Fit for TV: The Reality of the Biggest Loser,2025,6.68103,348,N/A,0,0,False,True,False
+282198,Nails,2025,7.00888,338,N/A,0,0,False,True,False
+249551,Néro the Assassin,2025,7.03951,329,TV-MA,0,0,False,True,False
+261363,Mid-Century Modern,2025,6.88889,333,TV-MA,0,0,False,True,False
+293613,Physical: Asia,2025,8.0033,303,TV-14,0,0,False,True,False
+289486,Cold Case: The Tylenol Murders,2025,7.00305,328,TV-14,0,0,False,True,False
+283484,Just One Look,2025,6.59118,340,TV-MA,0,0,False,True,False
+281615,The Water Magician,2025,7.0,327,TV-14,0,0,False,True,False
+243456,Superstar,2025,6.32948,346,N/A,0,0,False,True,False
+262819,LOL: Last One Laughing UK,2025,7.29653,317,N/A,0,0,False,True,False
+241361,Too Much,2025,6.37609,343,TV-MA,0,0,False,True,False
+247732,NCIS: Tony & Ziva,2025,6.84451,328,TV-14,0,0,False,True,False
+245773,Towards Zero,2025,6.43068,339,N/A,0,0,False,True,False
+226346,Deli Boys,2025,7.00938,320,TV-MA,0,0,False,True,False
+274671,The Beginning After the End,2025,6.42515,334,TV-14,0,0,False,True,False
+285205,Million Dollar Secret,2025,7.58,300,TV-14,0,0,False,True,False
+250836,Mariliendre,2025,7.49333,300,N/A,0,0,False,True,False
+247662,Hotel Costiera,2025,6.45427,328,N/A,0,0,False,True,False
+271053,I Love LA,2025,6.72956,318,TV-MA,0,0,False,True,False
+229891,Can This Love Be Translated?,2026,7.94406,286,TV-MA,0,0,False,True,False
+228689,"Genie, Make a Wish",2025,7.51351,296,TV-MA,0,0,False,True,False
+281058,Secrets of the Silent Witch,2025,7.53242,293,TV-14,0,0,False,True,False
+251608,Bad Thoughts,2025,6.06287,334,TV-MA,0,0,False,True,False
+294968,Los Protegidos: Un nuevo poder,2025,7.56357,291,N/A,0,0,False,True,False
+227191,Nine Puzzles,2025,7.63763,287,TV-MA,0,0,False,True,False
+238084,Trigger,2025,7.35052,291,TV-MA,0,0,False,True,False
+217528,Heweliusz,2025,7.55789,285,TV-MA,0,0,False,True,False
+252751,Leanne,2025,7.09864,294,TV-14,0,0,False,True,False
+280110,My Hero Academia: Vigilantes,2025,6.98986,296,TV-14,0,0,False,True,False
+1054,The Young and the Restless,1973,6.76433,157,N/A,0,70807,False,False,True
+2778,Wheel of Fortune,1983,6.64078,103,TV-G,0,66689,False,False,True
+881,Days of our Lives,1965,7.0,164,TV-14,0,44587,False,False,True
+1402,The Walking Dead,2010,7.88776,71095,TV-MA,0,39561,False,False,True
+67136,This Is Us,2016,8.38321,6897,TV-14,0,31379,False,False,True
+31910,Naruto Shippūden,2007,8.55432,8275,TV-PG,0,31364,False,False,True
+291,Coronation Street,1960,6.84916,179,TV-PG,0,30880,False,False,True
+71728,Young Sheldon,2017,7.59158,8741,TV-PG,0,30307,False,False,True
+4614,NCIS,2003,7.97686,8296,TV-14,0,28045,False,False,True
+46952,The Blacklist,2013,7.97999,20293,TV-14,0,27605,False,False,True
+1429,Attack on Titan,2013,8.77187,19717,TV-MA,0,27118,False,False,True
+6647,The Bold and the Beautiful,1987,5.68,125,TV-14,0,26973,False,False,True
+2224,The Daily Show,1996,8.01552,3222,TV-14,0,26894,False,False,True
+4057,Criminal Minds,2005,8.17708,10560,TV-MA,0,26382,False,False,True
+14658,Survivor,2000,7.48345,2780,TV-PG,0,25799,False,False,True
+4656,WWE Raw,1993,7.10561,606,TV-14,0,24074,False,False,True
+2912,Jeopardy!,1984,7.82339,419,TV-G,0,21935,False,False,True
+2691,Two and a Half Men,2003,7.05294,13167,TV-14,0,21123,False,False,True
+60572,Pokémon,1997,7.58858,3257,TV-Y7,0,20463,False,False,True
+37680,Suits,2011,8.32386,28478,TV-14,0,19353,False,False,True
+4607,Lost,2004,8.07742,37717,TV-14,0,19270,False,False,True
+4087,The X-Files,1993,8.46385,13914,TV-14,0,18647,False,False,True
+65930,My Hero Academia,2016,8.1513,6973,TV-14,0,18562,False,False,True
+76479,The Boys,2019,8.37892,35129,TV-MA,0,18478,False,False,True
+1400,Seinfeld,1989,8.49654,14460,TV-PG,0,17950,False,False,True
+1911,Bones,2005,7.85099,10731,TV-14,0,17704,False,False,True
+97546,Ted Lasso,2020,8.61784,17605,TV-MA,0,16840,False,False,True
+75219,9-1-1,2018,7.94806,4255,TV-14,0,16817,False,False,True
+71712,The Good Doctor,2017,7.79246,8668,TV-14,0,16439,False,False,True
+15260,Adventure Time,2010,8.70539,8669,TV-PG,0,16227,False,False,True
+387,SpongeBob SquarePants,1999,7.89541,4274,TV-Y7,0,16173,False,False,True
+34307,Shameless,2011,8.45107,17230,TV-MA,0,16098,False,False,True
+1407,Homeland,2011,8.20238,25422,TV-MA,0,16008,False,False,True
+3452,Frasier,1993,7.99605,4309,TV-PG,0,15544,False,False,True
+69478,The Handmaid's Tale,2017,8.15099,15021,TV-MA,0,15113,False,False,True
+62650,Chicago Med,2015,7.78546,2256,TV-14,0,15077,False,False,True
+46260,Naruto,2002,8.21302,8708,TV-PG,0,15063,False,False,True
+30984,Bleach,2004,8.21734,4624,TV-14,0,15045,False,False,True
+5920,The Mentalist,2008,8.11597,13435,TV-14,0,14934,False,False,True
+18347,Community,2009,8.40954,22755,TV-14,0,14794,False,False,True
+549,Law & Order,1990,7.68277,1677,TV-14,0,14683,False,False,True
+2288,Prison Break,2005,8.09503,27434,TV-14,0,14118,False,False,True
+12971,Dragon Ball Z,1989,8.57427,7486,TV-14,0,14017,False,False,True
+62649,Superstore,2015,7.62433,6535,TV-14,0,13752,False,False,True
+1420,New Girl,2011,7.71578,17571,TV-14,0,13619,False,False,True
+57532,PAW Patrol,2013,5.42369,498,TV-Y,0,13337,False,False,True
+12609,Dragon Ball,1986,8.36755,5719,TV-PG,0,13220,False,False,True
+44217,Vikings,2013,8.41869,29239,TV-MA,0,13205,False,False,True
+153312,Tulsa King,2022,7.80766,6889,TV-MA,0,13138,False,False,True
+18165,The Vampire Diaries,2009,7.84567,17216,TV-14,0,12886,False,False,True
+62852,Billions,2016,8.22046,6305,TV-MA,0,12809,False,False,True
+1667,Saturday Night Live,1975,7.30049,2629,TV-14,0,12804,False,False,True
+153485,Sazae-san,1969,4.0,6,N/A,0,12761,False,False,True
+4604,Smallville,2001,7.68812,8731,TV-14,0,12699,False,False,True
+60735,The Flash,2014,7.56644,26248,TV-14,0,12476,False,False,True
+2122,King of the Hill,1997,7.69409,3403,TV-PG,0,12320,False,False,True
+249522,Beast Games,2024,6.3301,1236,TV-PG,0,12267,False,False,True
+37678,The Voice,2011,6.84053,1505,TV-PG,0,11851,False,False,True
+3719,48 Hours,1988,7.59394,165,TV-14,0,11807,False,False,True
+126027,Ghosts,2021,7.76133,2229,TV-14,0,11682,False,False,True
+1409,Sons of Anarchy,2008,8.51937,18719,TV-MA,0,11664,False,False,True
+39340,2 Broke Girls,2011,7.27864,9575,TV-14,0,11636,False,False,True
+1412,Arrow,2012,7.46228,33746,TV-14,0,11552,False,False,True
+46298,Hunter x Hunter,2011,8.84961,6849,TV-14,0,11406,False,False,True
+655,Star Trek: The Next Generation,1987,8.66118,9657,TV-PG,0,11406,False,False,True
+1549,WWE SmackDown,1999,6.86111,324,TV-PG,0,11403,False,False,True
+1705,Fringe,2008,8.55317,24000,TV-14,0,11034,False,False,True
+1438,The Wire,2002,9.1852,18029,TV-MA,0,10955,False,False,True
+48866,The 100,2014,7.71491,23182,TV-14,0,10869,False,False,True
+52,That '70s Show,1998,7.92772,8730,TV-PG,0,10846,False,False,True
+8514,RuPaul's Drag Race,2009,7.58337,2261,TV-14,0,10836,False,False,True
+63770,The Late Show with Stephen Colbert,2015,6.57365,835,TV-14,0,10741,False,False,True
+125988,Silo,2023,8.17011,13150,TV-MA,0,10733,False,False,True
+4586,Gilmore Girls,2000,8.2328,8359,TV-14,0,10694,False,False,True
+97951,Mayor of Kingstown,2021,7.91586,3209,TV-MA,0,10685,False,False,True
+2370,Hell's Kitchen,2005,7.21581,2113,TV-14,0,10652,False,False,True
+10160,Big Brother,2000,6.32051,1248,TV-14,0,10648,False,False,True
+136315,The Bear,2022,8.28292,12735,TV-MA,0,10595,False,False,True
+87917,For All Mankind,2019,8.1611,6133,TV-MA,0,10576,False,False,True
+63247,Westworld,2016,8.27886,29499,TV-MA,0,10567,False,False,True
+2527,Emmerdale,1972,6.70886,79,TV-PG,0,10517,False,False,True
+63639,The Expanse,2015,8.54102,15955,TV-14,0,10506,False,False,True
+1973,24,2001,8.16157,12521,TV-14,0,10466,False,False,True
+32390,The Real Housewives of Beverly Hills,2010,6.02903,620,TV-14,0,10414,False,False,True
+1419,Castle,2009,8.12724,12009,TV-14,0,10398,False,False,True
+63174,Lucifer,2016,7.98998,20951,TV-14,0,10352,False,False,True
+1422,The Middle,2009,7.79226,3668,TV-PG,0,10341,False,False,True
+30983,Case Closed,1996,8.35556,990,TV-14,0,10310,False,False,True
+82856,The Mandalorian,2019,8.38651,27826,TV-14,0,10211,False,False,True
+10283,Archer,2009,8.42169,13223,TV-MA,0,10203,False,False,True
+32692,Blue Bloods,2010,7.83263,3077,TV-14,0,10091,False,False,True
+1413,American Horror Story,2011,7.85288,20765,TV-MA,0,10044,False,False,True
+31132,Regular Show,2010,8.28155,2987,TV-PG,0,10028,False,False,True
+62560,Mr. Robot,2015,8.47774,30946,TV-MA,0,9962,False,False,True
+4238,The King of Queens,1998,7.50971,3194,TV-PG,0,9949,False,False,True
+56570,Outlander,2014,8.16,9094,TV-MA,0,9751,False,False,True
+4588,ER,1994,7.97425,2524,TV-14,0,9700,False,False,True
+42009,Black Mirror,2011,8.47215,38081,TV-MA,0,9626,False,False,True
+2674,Neighbours,1985,6.71074,121,TV-PG,0,9611,False,False,True
+1411,Person of Interest,2011,8.40215,16909,TV-14,0,9533,False,False,True
+208397,School Spirits,2023,7.75201,996,TV-MA,0,9522,False,False,True
+107113,Only Murders in the Building,2021,7.86922,9038,TV-MA,0,9492,False,False,True
+1855,Star Trek: Voyager,1995,8.03209,6233,TV-PG,0,9492,False,False,True
+46648,True Detective,2014,8.45268,23902,TV-MA,0,9336,False,False,True
+85937,Demon Slayer: Kimetsu no Yaiba,2019,8.51847,9260,TV-MA,0,9330,False,False,True
+1431,CSI: Crime Scene Investigation,2000,7.67085,3986,TV-14,0,9328,False,False,True
+66025,Animal Kingdom,2016,8.15695,2504,TV-MA,0,9240,False,False,True
+2354,Home and Away,1988,6.9125,80,TV-14,0,9237,False,False,True
+59186,Impractical Jokers,2011,8.04136,2273,TV-14,0,9162,False,False,True
+60573,Silicon Valley,2014,8.39154,17311,TV-MA,0,9118,False,False,True
+693,Desperate Housewives,2004,7.64978,6473,TV-14,0,9105,False,False,True
+246,Avatar: The Last Airbender,2005,9.15276,23337,TV-Y7,0,9028,False,False,True
+71790,S.W.A.T.,2017,7.60454,3128,TV-14,0,8932,False,False,True
+83867,Star Wars: Andor,2022,8.4332,12920,TV-14,0,8881,False,False,True
+1104,Mad Men,2007,8.50197,13220,TV-14,0,8680,False,False,True
+76331,Succession,2018,8.65122,12323,TV-MA,0,8674,False,False,True
