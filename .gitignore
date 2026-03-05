@@ -210,9 +210,13 @@ __marimo__/
 # csv massivos GitHub no tolera
 src/data/raw/movielens/*.csv
 src/data/raw/tmdb/movies/*.csv
-src/data/raw/tmdb/movies/*.jsonl
 
+src/data/raw/tmdb/movies/*.jsonl
 src/data/raw/tmdb/series/*.jsonl
+
+src/data/clean/ratings_limpio.csv
+
+src/data/ready/ratings_finales_ia.csv
 
 # Guardar credenciales de acceso
 .env
