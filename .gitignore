@@ -215,8 +215,10 @@ src/data/raw/tmdb/movies/*.jsonl
 src/data/raw/tmdb/series/*.jsonl
 
 src/data/clean/ratings_limpio.csv
+src/data/clean/tmdb_movies_limpio.csv
 
 src/data/ready/ratings_finales_ia.csv
+src/data/ready/dataset_final_movies.csv
 
 # Guardar credenciales de acceso
 .env

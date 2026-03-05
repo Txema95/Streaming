@@ -90,6 +90,6 @@ def preparar_matriz_ia():
 
 
 if __name__ == "__main__":
-    # unificar_capa_oro("shows")
-    # unificar_capa_oro("movies")
+    unificar_capa_oro("shows")
+    unificar_capa_oro("movies")
     preparar_matriz_ia()
