@@ -8,7 +8,7 @@ API_KEY = "75a85e69010ab0deb4646e3866d31631"
 BASE_URL = "https://api.themoviedb.org/3"
 
 def descargar_series_por_mes(ano_inicio=1990, ano_fin=2025):
-    print("Iniciando extracción masiva mes a mes (Tolerancia a fallos: Activada)...")
+    print("Iniciando extracción masiva de series mes a mes (Tolerancia a fallos: Activada)...")
     
     carpeta_destino = "src/data/raw/tmdb/series"
     os.makedirs(carpeta_destino, exist_ok=True)
