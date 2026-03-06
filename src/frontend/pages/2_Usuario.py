@@ -32,7 +32,6 @@ if not st.session_state["usuario_autenticado"]:
 
                         usuario_encontrado = None
                         for u in usuarios:
-                            # CORRECCION: Ajustamos a las verdaderas columnas de la BDD -> id_usuario y username
                             if (
                                 str(u.get("id_usuario")) == username
                                 or u.get("username") == username
