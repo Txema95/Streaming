@@ -78,11 +78,14 @@ if not st.session_state["usuario_autenticado"]:
                     st.info(
                         "Ya puedes ir a la pestaña 'Iniciar Sesión' y entrar (usando Mock por ahora no te dejará entrar ya que no escribí en BD, es una simulación visual)."
                     )
-
+#################################################################################################
 # ---- PANTALLA PRINCIPAL DEL USUARIO (Logueado) ----
 else:
+    import pandas as pd
+    import os
+
     usuario = st.session_state["usuario_actual"]
-    nombre_mostrar = usuario.get("name", f"Usuario #{usuario.get('id')}")
+    nombre_mostrar = usuario.get("username", f"Usuario #{usuario.get('id_usuario')}")
 
     # Barra superior con Logout
     col_titulo, col_logout = st.columns([8, 2])
@@ -96,41 +99,123 @@ else:
             st.rerun()
 
     st.markdown(
-        "Descubre películas y series gracias a nuestro Recomendador de Inteligencia Artificial."
+        "Descubre Películas y Series gracias a nuestro Recomendador de Inteligencia Artificial."
     )
     st.info(
-        "El sistema de recomendación está en desarrollo. ¡Pronto podrás ver tu catálogo personalizado aquí!"
+        "El motor de Inteligencia Artificial está en desarrollo. De momento puedes navegar por el catálogo completo."
     )
 
-    # Simulación de un buscador de catálogo
-    search_query = st.text_input("Busca una película o serie...")
+    # --- CARGA DE DATOS ---
+    @st.cache_data
+    def load_catalog_data():
+        movies_path = "src/data/ready/dataset_final_movies.csv"
+        shows_path = "src/data/ready/dataset_final_shows.csv"
 
-    if search_query:
-        st.write(f"Resultados de búsqueda para: **{search_query}**")
-        st.write("*(Simulación de catálogo...)*")
+        df_movies = pd.DataFrame()
+        df_shows = pd.DataFrame()
 
-        c1, c2, c3, c4 = st.columns(4)
-        with c1:
-            st.image(
-                "https://via.placeholder.com/300x450.png?text=Poster",
-                use_container_width=True,
+        # Leemos solo algunas columnas para no colapsar la memoria de Streamlit
+        cols_movies = [
+            "tmdb_id",
+            "titulo",
+            "overview",
+            "release_date",
+            "poster_path",
+            "vote_average",
+        ]
+        cols_shows = [
+            "tmdb_id",
+            "titulo",
+            "overview",
+            "first_air_date",
+            "poster_path",
+            "vote_average",
+        ]
+
+        if os.path.exists(movies_path):
+            try:
+                df_movies = pd.read_csv(movies_path, usecols=cols_movies)
+            except Exception:
+                df_movies = pd.read_csv(movies_path)
+
+        if os.path.exists(shows_path):
+            try:
+                df_shows = pd.read_csv(shows_path, usecols=cols_shows)
+            except Exception:
+                df_shows = pd.read_csv(shows_path)
+
+        return df_movies, df_shows
+
+    df_movies, df_shows = load_catalog_data()
+
+    # --- BUSCADOR GLOBAL ---
+    search_query = st.text_input("Busca por título o palabras clave...")
+
+    # --- PESTAÑAS DEL CATÁLOGO ---
+    tab_movies, tab_shows = st.tabs(["Películas", "Series"])
+
+    # Función para dibujar las postales
+    def render_catalog(df, query, limit=12, is_movie=True):
+        if df.empty:
+            st.warning(
+                "El catálogo no está disponible porque faltan los archivos de datos en `src/data/ready/`."
             )
-            st.caption("Película Ejemplo 1")
-        with c2:
-            st.image(
-                "https://via.placeholder.com/300x450.png?text=Poster",
-                use_container_width=True,
-            )
-            st.caption("Película Ejemplo 2")
-        with c3:
-            st.image(
-                "https://via.placeholder.com/300x450.png?text=Poster",
-                use_container_width=True,
-            )
-            st.caption("Película Ejemplo 3")
-        with c4:
-            st.image(
-                "https://via.placeholder.com/300x450.png?text=Poster",
-                use_container_width=True,
-            )
-            st.caption("Película Ejemplo 4")
+            return
+
+        # Filtrado por búsqueda
+        if query:
+            mask = df["titulo"].str.contains(query, case=False, na=False)
+            filtered_df = df[mask]
+        else:
+            if "vote_average" in df.columns:
+                filtered_df = df.sort_values(by="vote_average", ascending=False)
+            else:
+                filtered_df = df
+
+        results_to_show = filtered_df.head(limit)
+
+        if results_to_show.empty:
+            st.write("No se encontraron resultados para tu búsqueda.")
+            return
+
+        st.write(f"Mostrando {len(results_to_show)} resultados destacados...")
+
+        # Grid de 4 columnas
+        cols = st.columns(4)
+        for index, (_, row) in enumerate(results_to_show.iterrows()):
+            col = cols[index % 4]
+            with col:
+                # Poster
+                poster_url = "https://via.placeholder.com/300x450.png?text=Sin+Poster"
+                if pd.notna(row.get("poster_path")):
+                    poster_url = f"https://image.tmdb.org/t/p/w500{row['poster_path']}"
+
+                st.image(poster_url, use_container_width=True)
+                titulo = row.get("titulo", "Sin Título")
+
+                # Truncamos strings
+                if len(str(titulo)) > 30:
+                    titulo = titulo[:27] + "..."
+
+                # Obtener año según si es peli (release) o serie (first air)
+                date_col = "release_date" if is_movie else "first_air_date"
+                year = str(row.get(date_col, ""))[:4]
+
+                if year != "nan" and year:
+                    st.markdown(f"**{titulo}** ({year})")
+                else:
+                    st.markdown(f"**{titulo}**")
+
+                if st.button(
+                    "Ver detalles",
+                    key=f"{'mov' if is_movie else 'tv'}_{row.get('tmdb_id', index)}",
+                ):
+                    st.toast(row.get("overview", "Sin Sinopsis disponible."))
+
+    with tab_movies:
+        st.subheader("Mejores Películas")
+        render_catalog(df_movies, search_query, limit=12, is_movie=True)
+
+    with tab_shows:
+        st.subheader("Mejores Series")
+        render_catalog(df_shows, search_query, limit=12, is_movie=False)
