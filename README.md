@@ -129,6 +129,49 @@ pip install streamlit
 
 pip install dotenv
 
+Descargar mysql server y workbench
+https://dev.mysql.com/downloads/installer/
+
+configurar mysql server
+usuario: txema
+contraseña: root
+contraseña_root: root
+
+añadir mysql al path:
+
+- editar variables de entorno
+- editar path
+- añadir al final:
+  C:\Program Files\MySQL\MySQL Server 8.0\bin
+
+desde consola ejecutar y escribir contraseña de root definida en la instalación:
+mysql -u root -p
+
+creamos la base de datos:
+CREATE DATABASE streaming_db;
+
+desde el workbench ejecutar el script
+src\data\scripts_sql\create_database.sql
+
+CONECTAR A BBDD LOCAL
+
+- instalar conector:
+  pip install mysql-connector-python
+
+## PREPARACIÓN BACKEND
+
+Usamos fastapi para montar un backend
+pip install fastapi uvicorn requests
+
+## PREPARACIÓN FRONTEND
+
+Usamos streamlit
+pip install streamlit
+
+## Configurar .env
+
+pip install dotenv
+
 ## VECTORIZACIÓN
 
 ## MODELO
