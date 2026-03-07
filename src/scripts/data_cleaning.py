@@ -2,9 +2,10 @@ import pandas as pd
 import json
 import os
 
-#  LIMPIEZA DEL CATÁLOGO TMDB
 def limpiar_catalogo_puro(tipo="movies"):
-    print(f"Data Cleaning TMDB para {tipo.upper()}...")
+    print(f"\n==============================================")
+    print(f"INICIANDO PROCESO PARA: {tipo.upper()} (TMDB)")
+    print(f"==============================================")
     
     carpeta_tmdb = "series" if tipo == "shows" else "movies"
     nombre_archivo = "catalogo_series_tmdb.jsonl" if tipo == "shows" else "catalogo_peliculas_tmdb.jsonl"
@@ -27,7 +28,7 @@ def limpiar_catalogo_puro(tipo="movies"):
     col_titulo = 'name' if tipo == "shows" else 'title'
     col_fecha = 'first_air_date' if tipo == "shows" else 'release_date'
     
-    print(f"\n Auditoria de datos:")
+    print(f"\n[Fase 1] Auditoria de datos:")
     print(f"  -> Total de filas en bruto: {len(df)}")
     
     duplicados = df.duplicated(subset=['id']).sum()
@@ -43,16 +44,17 @@ def limpiar_catalogo_puro(tipo="movies"):
         futuro = (fechas > pd.to_datetime('2025-12-31')).sum()
         print(f"  -> Contenido del futuro (>2025): {futuro}")
         
-    filas_esperadas = len(df) - duplicados - (sin_id + sin_titulo) - futuro
-    print(f"  -> Filas reales esperadas tras la limpieza: {filas_esperadas}")
-    
-    print(f"\n Aplicando limpieza de datos...")
+    print(f"\n[Fase 2] Aplicando limpieza de datos estricta...")
     
     df = df.rename(columns={'id': 'tmdb_id', col_titulo: 'titulo', col_fecha: 'fecha_estreno'})
-    
     df = df.drop_duplicates(subset=['tmdb_id'])
     df = df.dropna(subset=['tmdb_id', 'titulo'])
     
+    if 'genre_ids' in df.columns:
+        df = df[df['genre_ids'].notna()]
+        df = df[df['genre_ids'].astype(str) != '[]']
+    
+    # Resto de imputaciones estándar
     if 'overview' in df.columns:
         df['overview'] = df['overview'].fillna('Sin descripcion disponible.').astype(str).str.strip()
     
@@ -60,20 +62,17 @@ def limpiar_catalogo_puro(tipo="movies"):
         if col_img in df.columns: 
             df[col_img] = df[col_img].fillna('')
             
-    for col_num in ['popularity', 'vote_average', 'vote_count']:
+    for col_num in ['vote_average', 'vote_count']:
         if col_num in df.columns: 
             df[col_num] = df[col_num].fillna(0)
             
-    if 'genre_ids' in df.columns:
-        df['genre_ids'] = df['genre_ids'].fillna('[]')
-        
     if 'fecha_estreno' in df.columns:
         df['fecha_estreno'] = pd.to_datetime(df['fecha_estreno'], errors='coerce')
         df = df[(df['fecha_estreno'] <= pd.to_datetime('2025-12-31')) | (df['fecha_estreno'].isna())]
         df['fecha_estreno'] = df['fecha_estreno'].dt.strftime('%Y-%m-%d').fillna('Desconocida')
     
     df.to_csv(ruta_salida, index=False)
-    print(f"TMDB limpios: {len(df)} filas guardadas en {ruta_salida}\n")
+    print(f"TMDB limpios y filtrados: {len(df)} filas guardadas en {ruta_salida}\n")
 
 #  LIMPIEZA DE TENDENCIAS TRAKT 
 def limpiar_tendencias_trakt(tipo="movies"):
