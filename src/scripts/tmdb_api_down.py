@@ -66,34 +66,36 @@ def descargar_series_por_mes(ano_inicio=1990, ano_fin=2025):
                         break
 
 def descargar_peliculas_por_mes(ano_inicio=1990, ano_fin=2025):
-    print("Iniciando extracción masiva de peliculas mes a mes (Tolerancia a fallos: Activada)...")
+    print("Iniciando extracción masiva mes a mes (Tolerancia a fallos: Activada)...")
     
-    carpeta_destino = "src/data/raw/tmdb/movies" 
+    carpeta_destino = "src/data/raw/tmdb/movies"
     os.makedirs(carpeta_destino, exist_ok=True)
-    ruta_archivo = os.path.join(carpeta_destino, 'catalogo_peliculas_tmdb.jsonl')
+    ruta_archivo = os.path.join(carpeta_destino, 'catalogo_movies_tmdb.jsonl')
     
+    # 'a' (append) permite detener el script y retomarlo sin borrar lo anterior
     with open(ruta_archivo, 'a', encoding='utf-8') as archivo:
         
         for ano in range(ano_inicio, ano_fin + 1):
             for mes in range(1, 13):
+                # Averiguamos el último día de este mes en concreto
                 _, ultimo_dia = calendar.monthrange(ano, mes)
                 
+                # Formateamos las fechas a YYYY-MM-DD
                 fecha_inicio = f"{ano}-{mes:02d}-01"
                 fecha_fin = f"{ano}-{mes:02d}-{ultimo_dia:02d}"
                 
                 print(f"\n--- Descargando estrenos del {fecha_inicio} al {fecha_fin} ---")
                 pagina_actual = 1
                 
-                while pagina_actual <= 500:
-                    url = f"{BASE_URL}/discover/movie" 
-                    
+                while pagina_actual <= 500: # Ahora es matemáticamente imposible llegar a 500
+                    url = f"{BASE_URL}/discover/movie"
                     parametros = {
-                        "api_key": API_KEY,
-                        "language": "es-ES",
+                        "api_key": API_KEY, 
+                        "language": "es-ES", 
                         "page": pagina_actual,
                         "sort_by": "popularity.desc",
-                        "primary_release_date.gte": fecha_inicio,
-                        "primary_release_date.lte": fecha_fin
+                        "release_date.gte": fecha_inicio,
+                        "release_date.lte": fecha_fin
                     }
                     
                     respuesta = requests.get(url, params=parametros)
@@ -103,10 +105,11 @@ def descargar_peliculas_por_mes(ano_inicio=1990, ano_fin=2025):
                         resultados = datos.get("results", [])
                         
                         if not resultados:
+                            # Si la página está vacía, saltamos al mes siguiente
                             break 
                             
-                        for peli in resultados:
-                            archivo.write(json.dumps(peli, ensure_ascii=False) + '\n')
+                        for serie in resultados:
+                            archivo.write(json.dumps(serie, ensure_ascii=False) + '\n')
                             
                         print(f"[{fecha_inicio[:7]}] Página {pagina_actual} guardada.")
                         pagina_actual += 1
@@ -115,10 +118,11 @@ def descargar_peliculas_por_mes(ano_inicio=1990, ano_fin=2025):
                     elif respuesta.status_code == 429:
                         print("Límite de API. Esperando 10 segundos para descongestionar...")
                         time.sleep(10)
+                        
                     else:
                         print(f"Error HTTP {respuesta.status_code} en página {pagina_actual}. Saltando...")
                         break
 
-if __name__ == "__main__":
-    # descargar_series_por_mes(ano_inicio=1990, ano_fin=2025)
-    descargar_peliculas_por_mes(ano_inicio=1990, ano_fin=2025)
+# Ejecutamos la función
+#descargar_series_por_mes(ano_inicio=1990, ano_fin=2025)
+descargar_peliculas_por_mes(ano_inicio=1990, ano_fin=2025)

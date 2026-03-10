@@ -218,3 +218,5 @@ src/data/clean/*.csv
 
 src/data/ready/*.csv
 
+# Guardar credenciales de acceso
+.env

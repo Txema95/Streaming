@@ -1,28 +1,27 @@
 import streamlit as st
-import requests
-import pandas as pd
 
-st.set_page_config(page_title="Admin Panel", layout="wide")
+st.set_page_config(
+    page_title="Proyecto 4 - Streaming",
+)
 
-st.title("🚀 Panel de Control de Datos")
+st.write("# Bienvenido al Sistema de Streaming")
 
-# Sidebar para acciones
-if st.sidebar.button("🔄 Sincronizar con MySQL"):
-    response = requests.get("http://localhost:8000/usuarios")
-    if response.status_code == 200:
-        df = pd.DataFrame(response.json())
-        st.session_state['datos'] = df
-        st.success("Datos cargados!")
-    else:
-        st.error("Error al conectar con el Backend")
-if st.sidebar.button("🔄 Importar datos"):
-    response = requests.post("http://localhost:8000/importar_datos")
-    if response.status_code == 200:
-        st.success("Datos importados!")
-    else:
-        st.error("Error al conectar con el Backend")
+st.sidebar.success("Selecciona un perfil en el panel de navegación de arriba.")
 
-# Mostrar tabla si hay datos
-if 'datos' in st.session_state:
-    st.write("### Listado de Usuarios")
-    st.dataframe(st.session_state['datos'], use_container_width=True)
+st.markdown(
+    """
+    Esta es la interfaz unificada del Proyecto 4 de Streaming. Hemos dividido 
+    las funcionalidades en dos perfiles principales:
+
+    **Selecciona una página en el menú de la izquierda** para comenzar:
+
+    ### Administrador
+    - Sincroniza datos con la base de datos MySQL.
+    - Lanza procesos de importación y limpieza de datos (ETL).
+    - Visualiza métricas analíticas clave (EDA interactivo).
+
+    ### Usuario
+    - Búsqueda en el catálogo de películas y series.
+    - Motor de recomendación inteligente basado en IA *(Próximamente)*.
+"""
+)

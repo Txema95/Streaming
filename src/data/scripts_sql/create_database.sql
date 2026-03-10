@@ -10,7 +10,7 @@ CREATE TABLE contents (
     popularity DECIMAL(10,3),
     poster_path VARCHAR(255),
     backdrop_path VARCHAR(255),
-    vote_average DECIMAL(3,2),
+    vote_average DECIMAL(4,2),
     vote_count INT,
     adult BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
