@@ -5,13 +5,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 
-###########################################################################################
-
-usuario_admin = "NJJ"
-password_admin = "Gp5"
-
-##########################################################################################
-
 st.set_page_config(page_title="Admin Panel", layout="wide")
 
 # Login para admin
@@ -24,18 +17,43 @@ if not st.session_state["admin_autenticado"]:
         "Por favor, identifícate como parte del equipo de desarrollo para acceder al panel."
     )
 
+
     with st.form("admin_login_form"):
         admin_user = st.text_input("Usuario")
         admin_pass = st.text_input("Contraseña", type="password")
         submit_admin = st.form_submit_button("Acceder")
 
         if submit_admin:
-            if admin_user == usuario_admin and admin_pass == password_admin:
-                st.session_state["admin_autenticado"] = True
-                st.success("Acceso concedido.")
-                st.rerun()
-            else:
-                st.error("Credenciales de administrador incorrectas.")
+            # 1. Preparamos los datos para el API (deben coincidir con tu LoginRequest de FastAPI)
+            payload = {
+                "username": admin_user,
+                "password": admin_pass
+            }
+
+            try:
+                # 2. Hacemos la llamada POST al backend
+                response = requests.post("http://localhost:8000/login", json=payload)
+
+                if response.status_code == 200:
+                    # Login exitoso
+                    datos_usuario = response.json()
+                    st.session_state["admin_autenticado"] = True
+                    st.session_state["usuario_info"] = datos_usuario["user"] # Guardamos info del usuario si la necesitas
+                    
+                    st.success(f"Bienvenido, {admin_user}. Acceso concedido.")
+                    st.rerun()
+                
+                elif response.status_code == 401:
+                    # Error de credenciales (el HTTPException que definimos antes)
+                    st.error("Credenciales de administrador incorrectas.")
+                
+                else:
+                    st.error(f"Error inesperado en el servidor: {response.status_code}")
+
+            except requests.exceptions.ConnectionError:
+                st.error("No se pudo conectar con el servidor. ¿Está encendido el API?")
+    
+    
 else:
     st.title("Panel de Control de Administrador")
     st.markdown("Gestion de los datos y visualizacion de métricas clave.")
