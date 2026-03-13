@@ -108,8 +108,8 @@ def descargar_peliculas_por_mes(ano_inicio=1990, ano_fin=2025):
                             # Si la página está vacía, saltamos al mes siguiente
                             break 
                             
-                        for serie in resultados:
-                            archivo.write(json.dumps(serie, ensure_ascii=False) + '\n')
+                        for pelis in resultados:
+                            archivo.write(json.dumps(pelis, ensure_ascii=False) + '\n')
                             
                         print(f"[{fecha_inicio[:7]}] Página {pagina_actual} guardada.")
                         pagina_actual += 1
