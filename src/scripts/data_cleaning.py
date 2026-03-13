@@ -5,11 +5,9 @@ import os
 ###########################################################################################
 #  LIMPIEZA DEL CATÁLOGO TMDB
 ###########################################################################################
-
-
 def limpiar_catalogo_puro(tipo="movies"):
     print(f"Data Cleaning TMDB para {tipo.upper()}...")
-
+    
     # Determina la carpeta y el nombre del archivo en función de si es para series o películas
     carpeta_tmdb = "series" if tipo == "shows" else "movies"
     nombre_archivo = (
@@ -43,10 +41,11 @@ def limpiar_catalogo_puro(tipo="movies"):
     df = pd.DataFrame(datos)
 
     # Determina qué columnas usar para el título y la fecha según el tipo de contenido
-    col_titulo = "name" if tipo == "shows" else "title"
-    col_fecha = "first_air_date" if tipo == "shows" else "release_date"
-
+    col_titulo = 'name' if tipo == "shows" else 'title'
+    col_fecha = 'first_air_date' if tipo == "shows" else 'release_date'
+    
     print(f"\n Auditoria de datos:")
+
     print(f"  -> Total de filas en bruto: {len(df)}")
 
     # Contamos duplicados exactos (mismo ID)
@@ -66,55 +65,39 @@ def limpiar_catalogo_puro(tipo="movies"):
         fechas = pd.to_datetime(df[col_fecha], errors="coerce")
         futuro = (fechas > pd.to_datetime("2025-12-31")).sum()
         print(f"  -> Contenido del futuro (>2025): {futuro}")
-
-    # Contamos filas reales esperadas tras la limpieza
-    filas_esperadas = len(df) - duplicados - (sin_id + sin_titulo) - futuro
-    print(f"  -> Filas reales esperadas tras la limpieza: {filas_esperadas}")
-
-    print(f"\n Aplicando limpieza de datos...")
-
-    df = df.rename(
-        columns={"id": "tmdb_id", col_titulo: "titulo", col_fecha: "fecha_estreno"}
-    )
+        
+    print(f"\n Aplicando limpieza de datos estricta...")
+    
+    df = df.rename(columns={'id': 'tmdb_id', col_titulo: 'titulo', col_fecha: 'fecha_estreno'})
 
     # Eliminamos duplicados y filas con datos nulos
-    df = df.drop_duplicates(subset=["tmdb_id"])
-    df = df.dropna(subset=["tmdb_id", "titulo"])
-
+    df = df.drop_duplicates(subset=['tmdb_id'])
+    df = df.dropna(subset=['tmdb_id', 'titulo'])
+    #eliminamos filas sin géneros asociados
+    if 'genre_ids' in df.columns:
+        df = df[df['genre_ids'].notna()]
+        df = df[df['genre_ids'].astype(str) != '[]']
+    
     # Rellenamos valores nulos con "Sin descripcion disponible." para descripciones
-    if "overview" in df.columns:
-        df["overview"] = (
-            df["overview"].fillna("Sin descripcion disponible.").astype(str).str.strip()
-        )
-
+    if 'overview' in df.columns:
+        df['overview'] = df['overview'].fillna('Sin descripcion disponible.').astype(str).str.strip()
     # Rellenamos valores nulos con "" para imágenes
-    for col_img in ["poster_path", "backdrop_path"]:
-        if col_img in df.columns:
-            df[col_img] = df[col_img].fillna("")
-
-    # Rellenamos valores nulos con 0 para estadísticas numéricas
-    for col_num in ["popularity", "vote_average", "vote_count"]:
-        if col_num in df.columns:
+    for col_img in ['poster_path', 'backdrop_path']:
+        if col_img in df.columns: 
+            df[col_img] = df[col_img].fillna('')
+    # Rellenamos valores nulos con 0 para estadísticas numéricas        
+    for col_num in ['vote_average', 'vote_count']:
+        if col_num in df.columns: 
             df[col_num] = df[col_num].fillna(0)
+    # Asignamos una lista vacía como cadena si no hay géneros asociados      
+    if 'fecha_estreno' in df.columns:
+        df['fecha_estreno'] = pd.to_datetime(df['fecha_estreno'], errors='coerce')
+        df = df[(df['fecha_estreno'] <= pd.to_datetime('2025-12-31')) | (df['fecha_estreno'].isna())]
+        df['fecha_estreno'] = df['fecha_estreno'].dt.strftime('%Y-%m-%d').fillna('Desconocida')
+    
 
-    # Asignamos una lista vacía como cadena si no hay géneros asociados
-    if "genre_ids" in df.columns:
-        df["genre_ids"] = df["genre_ids"].fillna("[]")
-
-    # Formateamos las fechas y filtra las entradas posteriores a 2025 o con fechas nulas
-    if "fecha_estreno" in df.columns:
-        df["fecha_estreno"] = pd.to_datetime(df["fecha_estreno"], errors="coerce")
-        df = df[
-            (df["fecha_estreno"] <= pd.to_datetime("2025-12-31"))
-            | (df["fecha_estreno"].isna())
-        ]
-        df["fecha_estreno"] = (
-            df["fecha_estreno"].dt.strftime("%Y-%m-%d").fillna("Desconocida")
-        )
-
-    # Guarda el dataframe resultante limpio en un archivo CSV
     df.to_csv(ruta_salida, index=False)
-    print(f"TMDB limpios: {len(df)} filas guardadas en {ruta_salida}\n")
+    print(f"TMDB limpios y filtrados: {len(df)} filas guardadas en {ruta_salida}\n")
 
 
 ###########################################################################################
