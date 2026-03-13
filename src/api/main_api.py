@@ -1,9 +1,10 @@
 from fastapi import FastAPI, HTTPException
 from .database import get_db_connection
-from .etl import ejecutar_importacion
+from .etl import ejecutar_importacion, limpiar_tablas_contenido
 import csv
 import pandas as pd
 import numpy as np
+from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -23,12 +24,13 @@ def obtener_usuarios():
 def importar_series(conn):
     print("inicio importacion series")
     # Importamos Series
-    ejecutar_importacion(conn, 'src/data/raw/tmdb/series/catalogo_series_tmdb.csv', 'tv')
+    ejecutar_importacion(conn, 'src/data/clean/tmdb_shows_limpio.csv', 'tv')
     print("fin importacion series")
 def importar_peliculas(conn):
     print("inicio importacion peliculas, se viene lo chungo")
     # Importamos Películas
-    ejecutar_importacion(conn, 'src/data/raw/tmdb/movies/peliculas_2020_clean.csv', 'movie')
+    #ejecutar_importacion(conn, 'src/data/raw/tmdb/movies/peliculas_2020.csv', 'movie')
+    ejecutar_importacion(conn, 'src/data/clean/tmdb_movies_limpio.csv', 'movie')
     print("fin importacion peliculas, al fin!")
 def limpiar_csv():
     df = pd.read_csv("src/data/raw/tmdb/movies/peliculas_2020.csv")
@@ -45,11 +47,42 @@ def limpiar_csv():
 def importar_datos():
     conn = get_db_connection()
     try:
-        limpiar_csv()
-        #importar_series(conn)
+        limpiar_tablas_contenido(conn)
+        #limpiar_csv()
+        importar_series(conn)
         importar_peliculas(conn)
         return {"status": "success", "message": "Catálogos actualizados correctamente"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
     finally:
         conn.close()
+
+
+# Clase para definir qué datos esperamos en el JSON del POST
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+@app.post("/login")
+def login(datos: LoginRequest):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    # IMPORTANTE: Usamos consultas preparadas (%s) para evitar Inyección SQL
+    query = "SELECT id_usuario, username, email FROM users WHERE username = %s AND passwd = %s"
+    cursor.execute(query, (datos.username, datos.password))
+    
+    usuario = cursor.fetchone()
+    
+    cursor.close()
+    conn.close()
+
+    if usuario:
+        return {
+            "status": "success",
+            "message": "Login exitoso",
+            "user": usuario
+        }
+    else:
+        # Si no existe, lanzamos un error 401 (No autorizado)
+        raise HTTPException(status_code=401, detail="Usuario o contraseña incorrectos")
