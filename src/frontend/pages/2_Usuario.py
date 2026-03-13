@@ -118,7 +118,7 @@ else:
             "tmdb_id",
             "titulo",
             "overview",
-            "release_date",
+            "fecha_estreno",
             "poster_path",
             "vote_average",
         ]
