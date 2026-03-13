@@ -124,5 +124,5 @@ def descargar_peliculas_por_mes(ano_inicio=1990, ano_fin=2025):
                         break
 
 # Ejecutamos la función
-#descargar_series_por_mes(ano_inicio=1990, ano_fin=2025)
-descargar_peliculas_por_mes(ano_inicio=1990, ano_fin=2025)
+descargar_series_por_mes(ano_inicio=2020, ano_fin=2025)
+descargar_peliculas_por_mes(ano_inicio=2020, ano_fin=2025)
