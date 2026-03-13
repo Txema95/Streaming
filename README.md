@@ -84,6 +84,7 @@ Usamos fastapi para montar un backend
 ## PREPARACIÓN FRONTEND
 Usamos streamlit
     pip install streamlit
+    pip install extra-streamlit-components
     
 
 Descargar mysql server y workbench
