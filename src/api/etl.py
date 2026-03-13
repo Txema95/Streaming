@@ -117,71 +117,7 @@ def ejecutar_importacion(conexion, ruta_csv, tipo_contenido):
     print(f"Finalizado: {total_importados} registros totales de tipo {tipo_contenido}")
     cursor.close()
 
-
-def ejecutar_importacion_old(conexion, ruta_csv, tipo_contenido):
-    cursor = conexion.cursor()
-
-    # 1. SQL actualizado con el campo 'video'
-    sql_content = """
-    INSERT INTO contents 
-    (tmdb_id, content_type, title, video, original_title, overview, release_date, 
-     original_language, popularity, poster_path, backdrop_path, vote_average, vote_count, adult, created_at)
-    VALUES (%(tmdb_id)s, %(content_type)s, %(title)s, %(video)s, %(original_title)s, %(overview)s, 
-            NULLIF(%(release_date)s, ''), %(original_language)s, %(popularity)s, 
-            %(poster_path)s, %(backdrop_path)s, %(vote_average)s, %(vote_count)s, %(adult)s, NOW())
-    ON DUPLICATE KEY UPDATE 
-        title=VALUES(title), 
-        video=VALUES(video),
-        popularity=VALUES(popularity);
-    """
-
-    sql_genre = (
-        "INSERT IGNORE INTO content_genres (content_id, genre_id) VALUES (%s, %s)"
-    )
-
-    datos_contents = []
-    datos_relacionales = []
-
-    with open(ruta_csv, mode="r", encoding="utf-8-sig") as f:
-        lector = csv.DictReader(f)
-        for fila in lector:
-            data = normalizar_datos(fila, tipo_contenido)
-            
-            # --- LÓGICA PARA EL CAMPO VIDEO ---
-            # Convertimos 'True'/'False' (str) o True/False (bool) a 1 o 0
-            val_video = fila.get("video", "False")
-            if isinstance(val_video, str):
-                data["video"] = 1 if val_video.lower() == "true" else 0
-            else:
-                data["video"] = 1 if val_video else 0
-            # ----------------------------------
-
-            # Extraemos los géneros para la otra tabla
-            ids_generos = data.pop("generos") 
-
-            datos_contents.append(data)
-
-            # Preparar relaciones de géneros
-            for g_id in ids_generos:
-                datos_relacionales.append((data["tmdb_id"], g_id))
-
-    try:
-        # 1. Insertar contenidos en bloque
-        cursor.executemany(sql_content, datos_contents)
-
-        # 2. Insertar relaciones de géneros en bloque
-        if datos_relacionales:
-            cursor.executemany(sql_genre, datos_relacionales)
-
-        conexion.commit()
-        print(f"Importados {len(datos_contents)} registros de tipo {tipo_contenido}")
-
-    except Error as e:
-        conexion.rollback()
-        print(f"Error durante la importación: {e}")
-    finally:
-        cursor.close()
-        
+     
 def limpiar_tablas_contenido(conexion):
     """
     Limpia las tablas de contenidos y relaciones de géneros 
