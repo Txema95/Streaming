@@ -111,7 +111,7 @@ else:
             "tmdb_id",
             "titulo",
             "overview",
-            "release_date",
+            "fecha_estreno",
             "poster_path",
             "vote_average",
         ]
@@ -126,15 +126,24 @@ else:
 
         if os.path.exists(movies_path):
             try:
-                df_movies = pd.read_csv(movies_path, usecols=cols_movies)
+                df_movies = pd.read_csv(
+                    movies_path,
+                    usecols=cols_movies,
+                    on_bad_lines="skip",
+                    engine="python",
+                )
             except Exception:
-                df_movies = pd.read_csv(movies_path)
+                df_movies = pd.read_csv(
+                    movies_path, on_bad_lines="skip", engine="python"
+                )
 
         if os.path.exists(shows_path):
             try:
-                df_shows = pd.read_csv(shows_path, usecols=cols_shows)
+                df_shows = pd.read_csv(
+                    shows_path, usecols=cols_shows, on_bad_lines="skip", engine="python"
+                )
             except Exception:
-                df_shows = pd.read_csv(shows_path)
+                df_shows = pd.read_csv(shows_path, on_bad_lines="skip", engine="python")
 
         return df_movies, df_shows
 

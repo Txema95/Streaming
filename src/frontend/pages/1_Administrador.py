@@ -160,9 +160,68 @@ else:
         # todavía no ha generado la carpeta 'ready'. Comprueba si físicamente están ahí.
         if os.path.exists(movies_path) and os.path.exists(ratings_path):
             try:
-                # Leemos la basura en crudo y el frontend pintaría los gráficos seaborn (aún por programar)
-                df_movies = pd.read_csv(movies_path)
-                df_ratings = pd.read_csv(ratings_path)
-                st.write("Visualizaciones de datos activas.")
+                # Carga de datos
+                df_movies = pd.read_csv(
+                    movies_path, on_bad_lines="skip", engine="python"
+                )
+                df_ratings = pd.read_csv(
+                    ratings_path, on_bad_lines="skip", engine="python"
+                )
+
+                # Gráfico 1: Top 10 pelis
+                st.markdown(
+                    "### Top 10 Películas con Mejores Valoraciones (Mín. 500 votos)"
+                )
+                top_movies = (
+                    df_movies[df_movies["vote_count"] > 500]
+                    .sort_values(by="vote_average", ascending=False)
+                    .head(10)
+                )
+                fig1, ax1 = plt.subplots(figsize=(10, 6))
+                sns.barplot(
+                    x="vote_average",
+                    y="titulo",
+                    data=top_movies,
+                    palette="viridis",
+                    ax=ax1,
+                )
+                ax1.set_xlabel("Nota Media (Promedio de votos)")
+                ax1.set_ylabel("Título")
+                st.pyplot(fig1)
+
+                st.divider()
+
+                # Gráfico 2: Distribución de valoraciones por usuario
+                st.markdown(
+                    "### Distribución de la Cantidad de Valoraciones por Usuario"
+                )
+                user_counts = df_ratings["userId"].value_counts()
+                fig2, ax2 = plt.subplots(figsize=(10, 6))
+                sns.histplot(user_counts, bins=100, kde=True, color="blue", ax=ax2)
+                ax2.set_xlabel("Número de películas valoradas por el usuario")
+                ax2.set_ylabel("Cantidad de Usuarios")
+                ax2.set_xlim(0, 500)
+                st.pyplot(fig2)
+
+                # Info importante
+                cols_info = st.columns(3)
+                cols_info[0].metric(
+                    "Media valoraciones / usuario", f"{user_counts.mean():.2f}"
+                )
+                cols_info[1].metric(
+                    "Usuarios con < 20 valoraciones", f"{(user_counts < 20).sum()}"
+                )
+                cols_info[2].metric("Total de usuarios", f"{len(user_counts)}")
+
+                st.divider()
+
+                # Gráfico 3: Distribución general de Puntuaciones
+                st.markdown("### Distribución general de Puntuaciones (Estrellas)")
+                fig3, ax3 = plt.subplots(figsize=(10, 6))
+                sns.countplot(x="rating", data=df_ratings, palette="coolwarm", ax=ax3)
+                ax3.set_xlabel("Puntuación (Rating)")
+                ax3.set_ylabel("Cantidad de Votos")
+                st.pyplot(fig3)
+
             except Exception as e:
-                st.error(f"Error al procesar datos: {e}")
+                st.error(f"Error al procesar datos para EDA: {e}")
