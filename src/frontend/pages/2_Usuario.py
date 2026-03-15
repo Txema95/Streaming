@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 
-st.set_page_config(page_title="JJ Streaming - Usuario", layout="wide")
+st.set_page_config(page_title="SPIRE Streaming - Usuario", layout="wide")
 
 # Validar si el usuario está logueado en Streamlit Session State
 if "usuario_autenticado" not in st.session_state:
@@ -25,31 +25,24 @@ if not st.session_state["usuario_autenticado"]:
             submit_button = st.form_submit_button("Entrar")
 
             if submit_button:
+                payload = {"username": username, "password": password}
                 try:
-                    response = requests.get("http://localhost:8000/usuarios")
+                    response = requests.post(
+                        "http://localhost:8000/login", json=payload
+                    )
+
                     if response.status_code == 200:
-                        usuarios = response.json()
-
-                        usuario_encontrado = None
-                        for u in usuarios:
-                            if (
-                                str(u.get("id_usuario")) == username
-                                or u.get("username") == username
-                            ):
-                                usuario_encontrado = u
-                                break
-
-                        if usuario_encontrado:
-                            st.session_state["usuario_autenticado"] = True
-                            st.session_state["usuario_actual"] = usuario_encontrado
-                            st.success("¡Login exitoso!")
-                            st.rerun()  # Recarga la página para mostrar el catálogo
-                        else:
-                            st.error(
-                                "Credenciales incorrectas. Verifica tu usuario o regístrate en la otra pestaña."
-                            )
+                        datos_usuario = response.json()
+                        st.session_state["usuario_autenticado"] = True
+                        st.session_state["usuario_actual"] = datos_usuario["user"]
+                        st.success("¡Login exitoso!")
+                        st.rerun()  # Recarga la página para mostrar el catálogo
+                    elif response.status_code == 401:
+                        st.error(
+                            "Credenciales incorrectas. Verifica tu usuario o regístrate en la otra pestaña."
+                        )
                     else:
-                        st.error("Error conectando con el servidor de Backend.")
+                        st.error(f"Error en el servidor: {response.status_code}")
                 except Exception as e:
                     st.error(f"Error de conexión: {e}")
 
