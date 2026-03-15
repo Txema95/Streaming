@@ -5,6 +5,7 @@ import csv
 import pandas as pd
 import numpy as np
 from pydantic import BaseModel
+import bcrypt
 
 app = FastAPI()
 
@@ -68,9 +69,9 @@ def login(datos: LoginRequest):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     
-    # IMPORTANTE: Usamos consultas preparadas (%s) para evitar Inyección SQL
-    query = "SELECT id_usuario, username, email FROM users WHERE username = %s AND passwd = %s"
-    cursor.execute(query, (datos.username, datos.password))
+    # 1. Buscamos al usuario solo por nombre de usuario
+    query = "SELECT id_usuario, username, email, passwd FROM users WHERE username = %s"
+    cursor.execute(query, (datos.username,))
     
     usuario = cursor.fetchone()
     
@@ -78,11 +79,22 @@ def login(datos: LoginRequest):
     conn.close()
 
     if usuario:
-        return {
-            "status": "success",
-            "message": "Login exitoso",
-            "user": usuario
-        }
+        # Obtenemos el hash que estaba guardado en BD
+        hash_guardado = usuario['passwd']
+        
+        # 2. Comprobamos si la contraseña en texto plano coincide con el Hash de BD
+        #    bcrypt requiere que las cadenas estén en formato de bytes (.encode())
+        if bcrypt.checkpw(datos.password.encode('utf-8'), hash_guardado.encode('utf-8')):
+            
+            # Por seguridad, borramos el hash del diccionario temporal antes de mandarlo al frontend
+            del usuario['passwd']
+            
+            return {
+                "status": "success",
+                "message": "Login exitoso",
+                "user": usuario
+            }
+        else:
+            raise HTTPException(status_code=401, detail="Usuario o contraseña incorrectos")
     else:
-        # Si no existe, lanzamos un error 401 (No autorizado)
         raise HTTPException(status_code=401, detail="Usuario o contraseña incorrectos")

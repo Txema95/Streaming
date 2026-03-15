@@ -5,7 +5,9 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "bcrypt>=5.0.0",
     "dotenv>=0.9.9",
+    "extra-streamlit-components>=0.1.81",
     "fastapi>=0.135.1",
     "matplotlib>=3.10.8",
     "mysql-connector-python>=9.6.0",
