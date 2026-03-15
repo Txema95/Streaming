@@ -220,3 +220,6 @@ src/data/ready/*.csv
 
 # Guardar credenciales de acceso
 .env
+
+# Modelos entrenados (pesan demasiado para GitHub, se regeneran con los scripts)
+*.pkl

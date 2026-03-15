@@ -72,6 +72,7 @@ if not st.session_state["usuario_autenticado"]:
                     )
 #################################################################################################
 # ---- PANTALLA PRINCIPAL DEL USUARIO (Logueado) ----
+
 else:
     import pandas as pd
     import os
@@ -93,9 +94,9 @@ else:
     st.markdown(
         "Descubre Películas y Series gracias a nuestro Recomendador de Inteligencia Artificial."
     )
-    st.info(
-        "El motor de Inteligencia Artificial está en desarrollo. De momento puedes navegar por el catálogo completo."
-    )
+
+    # --- BUSCADOR GLOBAL ---
+    search_query = st.text_input("Busca por título o palabras clave...")
 
     # --- CARGA DE DATOS ---
     @st.cache_data
@@ -106,117 +107,186 @@ else:
         df_movies = pd.DataFrame()
         df_shows = pd.DataFrame()
 
-        # Leemos solo algunas columnas para no colapsar la memoria de Streamlit
-        cols_movies = [
-            "tmdb_id",
-            "titulo",
-            "overview",
-            "fecha_estreno",
-            "poster_path",
-            "vote_average",
-        ]
-        cols_shows = [
-            "tmdb_id",
-            "titulo",
-            "overview",
-            "first_air_date",
-            "poster_path",
-            "vote_average",
-        ]
-
         if os.path.exists(movies_path):
             try:
                 df_movies = pd.read_csv(
-                    movies_path,
-                    usecols=cols_movies,
-                    on_bad_lines="skip",
-                    engine="python",
-                )
-            except Exception:
-                df_movies = pd.read_csv(
                     movies_path, on_bad_lines="skip", engine="python"
                 )
+            except Exception:
+                pass
 
         if os.path.exists(shows_path):
             try:
-                df_shows = pd.read_csv(
-                    shows_path, usecols=cols_shows, on_bad_lines="skip", engine="python"
-                )
-            except Exception:
                 df_shows = pd.read_csv(shows_path, on_bad_lines="skip", engine="python")
+            except Exception:
+                pass
 
         return df_movies, df_shows
 
     df_movies, df_shows = load_catalog_data()
 
-    # --- BUSCADOR GLOBAL ---
-    search_query = st.text_input("Busca por título o palabras clave...")
-
-    # --- PESTAÑAS DEL CATÁLOGO ---
-    tab_movies, tab_shows = st.tabs(["Películas", "Series"])
-
-    # Función para dibujar las postales
-    def render_catalog(df, query, limit=12, is_movie=True):
+    # =====================================================================================
+    # Dibuja un grid de postales con poster, título y sinopsis
+    # =====================================================================================
+    def render_cards(df, limit=8, key_prefix="card", date_col="fecha_estreno"):
+        """Dibuja una fila de postales con poster, título y botón de sinopsis."""
         if df.empty:
-            st.warning(
-                "El catálogo no está disponible porque faltan los archivos de datos en `src/data/ready/`."
-            )
+            st.info("No hay datos disponibles para mostrar.")
             return
 
-        # Filtrado por búsqueda
-        if query:
-            mask = df["titulo"].str.contains(query, case=False, na=False)
-            filtered_df = df[mask]
-        else:
-            if "vote_average" in df.columns:
-                filtered_df = df.sort_values(by="vote_average", ascending=False)
-            else:
-                filtered_df = df
-
-        results_to_show = filtered_df.head(limit)
-
-        if results_to_show.empty:
-            st.write("No se encontraron resultados para tu búsqueda.")
-            return
-
-        st.write(f"Mostrando {len(results_to_show)} resultados destacados...")
-
-        # Grid de 4 columnas
         cols = st.columns(4)
-        for index, (_, row) in enumerate(results_to_show.iterrows()):
-            col = cols[index % 4]
-            with col:
+        for idx, (_, row) in enumerate(df.head(limit).iterrows()):
+            with cols[idx % 4]:
                 # Poster
                 poster_url = "https://via.placeholder.com/300x450.png?text=Sin+Poster"
-                if pd.notna(row.get("poster_path")):
+                if (
+                    pd.notna(row.get("poster_path"))
+                    and str(row.get("poster_path")) != ""
+                ):
                     poster_url = f"https://image.tmdb.org/t/p/w500{row['poster_path']}"
-
                 st.image(poster_url, use_container_width=True)
-                titulo = row.get("titulo", "Sin Título")
 
-                # Truncamos strings
-                if len(str(titulo)) > 30:
+                # Título truncado
+                titulo = str(row.get("titulo", "Sin Título"))
+                if len(titulo) > 30:
                     titulo = titulo[:27] + "..."
 
-                # Obtener año según si es peli (release) o serie (first air)
-                date_col = "release_date" if is_movie else "first_air_date"
+                # Año
                 year = str(row.get(date_col, ""))[:4]
-
-                if year != "nan" and year:
+                if year and year != "nan":
                     st.markdown(f"**{titulo}** ({year})")
                 else:
                     st.markdown(f"**{titulo}**")
 
-                if st.button(
-                    "Ver detalles",
-                    key=f"{'mov' if is_movie else 'tv'}_{row.get('tmdb_id', index)}",
-                ):
-                    st.toast(row.get("overview", "Sin Sinopsis disponible."))
+                # Nota
+                nota = row.get("vote_average", 0)
+                if nota:
+                    st.caption(f"{nota}")
+
+                # Botón de sinopsis
+                if st.button("Ver sinopsis", key=f"{key_prefix}_{idx}"):
+                    st.toast(str(row.get("overview", "Sin sinopsis disponible.")))
+
+    # =====================================================================================
+    # Renderiza las recomendaciones IA dentro de una pestaña
+    # =====================================================================================
+    def render_recomendaciones_ia(key_prefix="ia"):
+        """Llama al Backend y pinta las recomendaciones del modelo SVD."""
+        user_id_ia = usuario.get("id_usuario", None)
+        if not user_id_ia:
+            st.info("Tu perfil no tiene un ID asociado para generar recomendaciones.")
+            return
+
+        try:
+            resp_ia = requests.get(
+                f"http://localhost:8000/recomendar/{user_id_ia}", params={"n": 8}
+            )
+            if resp_ia.status_code == 200:
+                recomendaciones = resp_ia.json().get("recomendaciones", [])
+                if recomendaciones:
+                    cols_ia = st.columns(4)
+                    for idx, rec in enumerate(recomendaciones):
+                        with cols_ia[idx % 4]:
+                            poster = rec.get("poster_path", "")
+                            if poster and poster != "" and poster != "nan":
+                                st.image(
+                                    f"https://image.tmdb.org/t/p/w500{poster}",
+                                    use_container_width=True,
+                                )
+                            else:
+                                st.image(
+                                    "https://via.placeholder.com/300x450.png?text=Sin+Poster",
+                                    use_container_width=True,
+                                )
+                            titulo_rec = rec.get("titulo", "Sin Título")
+                            if len(titulo_rec) > 30:
+                                titulo_rec = titulo_rec[:27] + "..."
+                            st.markdown(f"**{titulo_rec}**")
+                            st.caption(
+                                f"⭐ Predicción IA: {rec['predicted_rating']} / 5.0"
+                            )
+                            if st.button("Ver sinopsis", key=f"{key_prefix}_{idx}"):
+                                st.toast(
+                                    rec.get("overview", "Sin sinopsis disponible.")
+                                )
+                else:
+                    st.info("No se encontraron recomendaciones para tu perfil.")
+            elif resp_ia.status_code == 503:
+                st.warning(
+                    "El modelo de IA aún no está entrenado. Pídele al administrador que lo ejecute."
+                )
+            else:
+                st.warning("No se pudieron obtener recomendaciones.")
+        except requests.exceptions.ConnectionError:
+            st.warning("No se pudo conectar con el Backend para recomendaciones.")
+
+    # =====================================================================================
+    # Contenido de una pestaña (recomendaciones + top rated + más vistos)
+    # =====================================================================================
+    def render_tab_content(df, search, is_movie=True):
+        """Dibuja las 3 secciones dentro de una pestaña: IA, Top Rated, Más Visto."""
+        prefix = "mov" if is_movie else "tv"
+        date_col = "fecha_estreno" if is_movie else "first_air_date"
+
+        # Si hay búsqueda activa, mostramos los resultados filtrados
+        if search:
+            st.subheader("Resultados de búsqueda")
+            if not df.empty and "titulo" in df.columns:
+                mask = df["titulo"].str.contains(search, case=False, na=False)
+                resultados = df[mask]
+                if not resultados.empty:
+                    render_cards(
+                        resultados,
+                        limit=12,
+                        key_prefix=f"{prefix}_search",
+                        date_col=date_col,
+                    )
+                else:
+                    st.info("No se encontraron resultados para tu búsqueda.")
+            return
+
+        # --- Sección 1: Recomendaciones IA ---
+        st.subheader("Recomendado para ti")
+        if is_movie:
+            render_recomendaciones_ia(key_prefix=f"{prefix}_ia")
+        else:
+            st.info(
+                "Las recomendaciones de series están en desarrollo. De momento disfruta del catálogo."
+            )
+
+        st.divider()
+
+        # --- Sección 2: Top mejor puntuadas ---
+        st.subheader("Mejor puntuadas por la comunidad")
+        if not df.empty and "vote_average" in df.columns and "vote_count" in df.columns:
+            # Filtro mínimo de votos para que no salgan pelis con 1 voto y nota 10
+            df_top = df[df["vote_count"] > 500].sort_values(
+                by="vote_average", ascending=False
+            )
+            render_cards(df_top, limit=8, key_prefix=f"{prefix}_top", date_col=date_col)
+        else:
+            st.info("No hay datos suficientes para generar el ranking.")
+
+        st.divider()
+
+        # --- Sección 3: Lo más visto ---
+        st.subheader("Lo más visto")
+        if not df.empty and "vote_count" in df.columns:
+            df_popular = df.sort_values(by="vote_count", ascending=False)
+            render_cards(
+                df_popular, limit=8, key_prefix=f"{prefix}_pop", date_col=date_col
+            )
+        else:
+            st.info("No hay datos suficientes para generar lo más visto.")
+
+    ###########################################################################################
+    # --- PESTAÑAS PRINCIPALES ---
+    ###########################################################################################
+
+    tab_movies, tab_shows = st.tabs(["Películas", "Series"])
 
     with tab_movies:
-        st.subheader("Mejores Películas")
-        render_catalog(df_movies, search_query, limit=12, is_movie=True)
+        render_tab_content(df_movies, search_query, is_movie=True)
 
     with tab_shows:
-        st.subheader("Mejores Series")
-        render_catalog(df_shows, search_query, limit=12, is_movie=False)
+        render_tab_content(df_shows, search_query, is_movie=False)
