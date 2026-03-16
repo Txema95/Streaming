@@ -2,9 +2,10 @@ import requests
 import pandas as pd
 import os
 import time
+from dotenv import load_dotenv
 
 # --- CONFIGURACIÓN ---
-TRAKT_CLIENT_ID = "9419ec6a85b467e556fd4a83e5b42110c1af6a9ed9df092d4433e2a4f5ba96e3" 
+TRAKT_CLIENT_ID = os.getenv("TRAKT_CLIENT_ID")
 HEADERS = {
     'Content-Type': 'application/json',
     'trakt-api-version': '2',

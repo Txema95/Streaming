@@ -3,8 +3,11 @@ import json
 import time
 import os
 import calendar  # Nos ayuda a saber cuántos días tiene cada mes
+from dotenv import load_dotenv
 
-API_KEY = "75a85e69010ab0deb4646e3866d31631"
+load_dotenv()
+
+API_KEY = os.getenv("TMDB_API_KEY")
 BASE_URL = "https://api.themoviedb.org/3"
 
 def descargar_series_por_mes(ano_inicio=1990, ano_fin=2025):
