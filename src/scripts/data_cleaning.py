@@ -19,8 +19,6 @@ def limpiar_catalogo_puro(tipo="movies"):
     # La ruta de donde se leerá el archivo JSONL
     ruta_entrada = f"src/data/raw/tmdb/{carpeta_tmdb}/{nombre_archivo}"
 
-    # Creamos el directorio de salida si no existe
-    os.makedirs("src/data/clean", exist_ok=True)
 
     # La ruta donde se guardará el archivo CSV limpio
     ruta_salida = f"src/data/clean/tmdb_{tipo}_limpio.csv"
