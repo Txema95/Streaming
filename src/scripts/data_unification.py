@@ -90,3 +90,18 @@ if __name__ == "__main__":
     preparar_matriz_ia()
     unificar_datos("movies")
     unificar_datos("shows")
+    
+    print("Sincronizando base de datos de calificaciones (IA) con el catálogo final de películas...")
+    try:
+        df_movies = pd.read_csv("src/data/ready/dataset_final_movies.csv")
+        df_ia = pd.read_csv("src/data/ready/ratings_finales_ia.csv")
+        
+        ids_validos = df_movies['tmdb_id'].unique()
+        filas_antes = len(df_ia)
+        df_ia = df_ia[df_ia['tmdb_id'].isin(ids_validos)]
+        filas_despues = len(df_ia)
+        
+        df_ia.to_csv("src/data/ready/ratings_finales_ia.csv", index=False)
+        print(f"Matriz IA sincronizada: {filas_antes} -> {filas_despues} valoraciones restantes (eliminadas {filas_antes - filas_despues} valoraciones de películas fantasma).\n")
+    except FileNotFoundError:
+        print("Error: No se encontraron los archivos finales para la sincronización.")

@@ -193,8 +193,11 @@ def recomendar_peliculas(user_id: int, n: int = 10):
         df_ratings_ia[df_ratings_ia["userId"] == user_id]["tmdb_id"].tolist()
     )
 
-    # 2. Todas las películas disponibles en el sistema
-    todas_las_pelis = set(df_ratings_ia["tmdb_id"].unique())
+    # 2. Todas las películas disponibles en el sistema (aseguramos que parten del catálogo)
+    if df_catalogo is not None:
+        todas_las_pelis = set(df_catalogo["tmdb_id"].unique())
+    else:
+        todas_las_pelis = set(df_ratings_ia["tmdb_id"].unique())
 
     # 3. Candidatas = las que NO ha visto
     pelis_no_vistas = todas_las_pelis - pelis_vistas
