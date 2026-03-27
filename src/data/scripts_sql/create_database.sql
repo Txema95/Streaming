@@ -3,6 +3,7 @@ CREATE TABLE contents (
     tmdb_id INT PRIMARY KEY,
     content_type ENUM('movie', 'tv') NOT NULL,
     title VARCHAR(255) NOT NULL, -- Mapea 'title' (movie) y 'name' (tv)
+    video BOOLEAN DEFAULT FALSE,
     original_title VARCHAR(255),
     overview TEXT,
     release_date DATE,           -- Mapea 'release_date' y 'first_air_date'
