@@ -20,10 +20,8 @@ from torch.utils.data import Dataset, DataLoader
 from sklearn.model_selection import train_test_split
 
 # Importamos nuestra Red Neuronal local
-import sys
 
-sys.path.append(os.path.join(os.path.dirname(__file__), "..", "networks", "dl"))
-from rn_mlp import WideAndDeepModel
+from src.networks.dl.rn_mlp import WideAndDeepModel
 
 # -----------------------------------------------------------------------------------------
 # CONFIGURACIÓN GLOBAL
@@ -39,7 +37,9 @@ BATCH_SIZE = (
     4096  # Cuántas valoraciones procesamos de golpe. Las GPU aman los lotes grandes.
 )
 EPOCHS = 10  # Pasadas completas por todo el dataset de entrenamiento.
-LEARNING_RATE = 0.001  # Tasa de aprendizaje moderada para evitar explosión de gradientes.
+LEARNING_RATE = (
+    0.001  # Tasa de aprendizaje moderada para evitar explosión de gradientes.
+)
 
 
 # -----------------------------------------------------------------------------------------
@@ -73,7 +73,7 @@ def cargar_y_preparar_datos():
 
     print(f"\n  Leyendo {ruta_ratings}...")
     df = pd.read_csv(ruta_ratings)
-    
+
     # IMPORTANTE: nn.Embedding(N) necesita índices exactos de 0 a (N-1).
     # Como tmdb_id y userId no son necesariamente secuenciales, creamos un Diccionario Traductor.
     print("\n  Creando indices continuos (Mapeos) para la Red Neuronal...")
@@ -114,7 +114,7 @@ def entrenar_modelo(df_train, df_test, num_users, num_movies):
     print("=" * 70)
 
     # 1. Detectar hardware (¡Aquí brilla tu RTX 5060 de Anaconda!)
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(
         f"\n  -> Dispositivo seleccionado: {device.type.upper()} "
         + (
@@ -181,10 +181,12 @@ def entrenar_modelo(df_train, df_test, num_users, num_movies):
 
             # Acumulamos el error total de toda la época
             total_loss += loss.item() * len(ratings)
-            
+
             # Progreso en vivo
             if i % 50 == 0 and i > 0:
-                print(f"    Batch {i:03d}/{len(train_loader)} | Loss actual: {loss.item():.4f}")
+                print(
+                    f"    Batch {i:03d}/{len(train_loader)} | Loss actual: {loss.item():.4f}"
+                )
 
         avg_train_loss = total_loss / len(train_dataset)
         tiempo_epoca = time.time() - inicio_epoca
