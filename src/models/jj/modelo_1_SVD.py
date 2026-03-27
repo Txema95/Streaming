@@ -32,7 +32,7 @@ from surprise import accuracy
 ruta_ratings = "src/data/ready/ratings_finales_ia.csv"
 
 # Ruta donde guardaremos el modelo ya entrenado para que el Backend lo cargue sin re-entrenar
-ruta_modelo = "src/models/modelo_1_SVD.pkl"
+ruta_modelo = "src/models/jj/modelo_1_SVD.pkl"
 
 # Mínimo de valoraciones que debe tener un usuario para incluirlo en el entrenamiento.
 # Usuarios con pocas valoraciones aportan ruido y ralentizan el proceso.
@@ -242,7 +242,7 @@ def cargar_modelo_guardado():
     """
     if not os.path.exists(ruta_modelo):
         print(f"  Error: No se encontró el modelo en {ruta_modelo}")
-        print(f"  Ejecuta primero: python src/models/modelo_1_SVD.py")
+        print(f"  Ejecuta primero: python src/models/jj/modelo_1_SVD.py")
         return None
 
     with open(ruta_modelo, "rb") as f:
@@ -255,7 +255,7 @@ def cargar_modelo_guardado():
 ##############################################################################################
 #  PRINCIPAL: Se ejecuta directamente
 
-#   Comando: python src/models/modelo_1_SVD.py
+#   Comando: python src/models/jj/modelo_1_SVD.py
 ##############################################################################################
 
 if __name__ == "__main__":

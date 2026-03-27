@@ -27,9 +27,9 @@ from src.networks.dl.rn_mlp import WideAndDeepModel
 # CONFIGURACIÓN GLOBAL
 # -----------------------------------------------------------------------------------------
 ruta_ratings = "src/data/ready/ratings_finales_ia.csv"
-ruta_modelo = "src/models/modelo_3_wnd.pth"  # Formato oficial de PyTorch para pesajes
+ruta_modelo = "src/models/jj/modelo_3_wnd.pth"  # Formato oficial de PyTorch para pesajes
 ruta_mapeos = (
-    "src/models/wnd_mappings.pkl"  # Necesario para recordar qué ID real es cada vector
+    "src/models/jj/wnd_mappings.pkl"  # Necesario para recordar qué ID real es cada vector
 )
 
 # Parámetros del Deep Learning (Hiperparámetros)

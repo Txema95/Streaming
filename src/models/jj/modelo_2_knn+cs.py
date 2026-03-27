@@ -46,7 +46,7 @@ from surprise import accuracy
 ruta_ratings = "src/data/ready/ratings_finales_ia.csv"
 
 # Ruta donde guardaremos este modelo
-ruta_modelo = "src/models/modelo_2_knn_cs.pkl"
+ruta_modelo = "src/models/jj/modelo_2_knn_cs.pkl"
 
 # Mínimos de valoraciones para evitar el desbordamiento de RAM (OOM) en KNN
 min_ratings_por_usuario = 50
