@@ -111,6 +111,14 @@ else:
     }
     endpoint_ia = mapa_endpoints[modelo_ia]
 
+    # --- DEV TOOL: Simular otro usuario ---
+    id_simulado = st.sidebar.number_input(
+        "Datos ratings - ID Usuario ",
+        value=usuario.get("id_usuario", 1),
+        step=1,
+        help="Permite simular predicciones para IDs de súper-usuarios (ej. 9) que existen en el set de datos pero no en tu base de datos local.",
+    )
+
     # --- CARGA DE DATOS ---
     @st.cache_data
     def load_catalog_data():
@@ -185,7 +193,8 @@ else:
     # =====================================================================================
     def render_recomendaciones_ia(key_prefix="ia", endpoint="recomendar"):
         """Llama al Backend y pinta las recomendaciones del modelo SVD."""
-        user_id_ia = usuario.get("id_usuario", None)
+        # Usamos el id_simulado del sidebar para pruebas con IA
+        user_id_ia = id_simulado
         if not user_id_ia:
             st.info("Tu perfil no tiene un ID asociado para generar recomendaciones.")
             return
@@ -216,7 +225,7 @@ else:
                                 titulo_rec = titulo_rec[:27] + "..."
                             st.markdown(f"**{titulo_rec}**")
                             st.caption(
-                                f"⭐ Predicción IA: {rec['predicted_rating']} / 5.0"
+                                f" Predicción IA: {rec['predicted_rating']} / 5.0"
                             )
                             if st.button("Ver sinopsis", key=f"{key_prefix}_{idx}"):
                                 st.toast(

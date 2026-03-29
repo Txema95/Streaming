@@ -15,17 +15,21 @@ try:
 
     try:
         from networks.dl.rn_mlp import WideAndDeepModel
+
         print("[WnD] WideAndDeepModel importado desde 'networks.dl.rn_mlp'")
     except ImportError as e1:
         print(f"[WnD] Import 1 fallido: {e1}")
         try:
             from src.networks.dl.rn_mlp import WideAndDeepModel
+
             print("[WnD] WideAndDeepModel importado desde 'src.networks.dl.rn_mlp'")
         except ImportError as e2:
             print(f"[WnD] Import 2 fallido: {e2} -> WideAndDeepModel = None")
             WideAndDeepModel = None
     TORCH_DISPONIBLE = True
-    print(f"[WnD] PyTorch {torch.__version__} disponible. WideAndDeepModel={'OK' if WideAndDeepModel else 'None'}")
+    print(
+        f"[WnD] PyTorch {torch.__version__} disponible. WideAndDeepModel={'OK' if WideAndDeepModel else 'None'}"
+    )
 except ImportError as e:
     print(f"[WnD] PyTorch no instalado: {e}")
     TORCH_DISPONIBLE = False
@@ -146,7 +150,7 @@ def login(datos: LoginRequest):
 
 
 ##############################################################################################
-#  Recomendación Modelo SVD
+#  Recomendación Modelos
 ##############################################################################################
 
 # Ruta al modelo SVD entrenado y al CSV de ratings, para saber qué pelis ya ha visto el usuario.
@@ -196,7 +200,9 @@ def cargar_modelo_al_arrancar():
         print(f"No se encontró el modelo KNN en {ruta_modelo_knn}")
 
     # --- Modelo 3: Wide & Deep (PyTorch) ---
-    print(f"[WnD Startup] TORCH_DISPONIBLE={TORCH_DISPONIBLE}, WideAndDeepModel={WideAndDeepModel}")
+    print(
+        f"[WnD Startup] TORCH_DISPONIBLE={TORCH_DISPONIBLE}, WideAndDeepModel={WideAndDeepModel}"
+    )
     if TORCH_DISPONIBLE and WideAndDeepModel is not None:
         if os.path.exists(ruta_modelo_wnd) and os.path.exists(ruta_mapeos_wnd):
             try:
@@ -204,7 +210,9 @@ def cargar_modelo_al_arrancar():
                     wnd_mappings = pickle.load(f)
                 num_users = len(wnd_mappings["user2idx"])
                 num_movies = len(wnd_mappings["movie2idx"])
-                print(f"[WnD Startup] Mappings: {num_users} usuarios, {num_movies} peliculas")
+                print(
+                    f"[WnD Startup] Mappings: {num_users} usuarios, {num_movies} peliculas"
+                )
                 modelo_wnd = WideAndDeepModel(
                     num_users=num_users,
                     num_movies=num_movies,
@@ -213,7 +221,9 @@ def cargar_modelo_al_arrancar():
                 )
                 modelo_wnd.load_state_dict(
                     torch.load(
-                        ruta_modelo_wnd, map_location=torch.device("cpu"), weights_only=True
+                        ruta_modelo_wnd,
+                        map_location=torch.device("cpu"),
+                        weights_only=True,
                     )
                 )
                 modelo_wnd.eval()
@@ -222,9 +232,13 @@ def cargar_modelo_al_arrancar():
                 print(f"[WnD Startup] ERROR al cargar el modelo: {e}")
                 modelo_wnd = None
         else:
-            print(f"[WnD Startup] Archivos no encontrados: .pth existe={os.path.exists(ruta_modelo_wnd)}, .pkl existe={os.path.exists(ruta_mapeos_wnd)}")
+            print(
+                f"[WnD Startup] Archivos no encontrados: .pth existe={os.path.exists(ruta_modelo_wnd)}, .pkl existe={os.path.exists(ruta_mapeos_wnd)}"
+            )
     else:
-        print(f"[WnD Startup] Saltando Wide&Deep: TORCH={TORCH_DISPONIBLE}, modelo_class={WideAndDeepModel}")
+        print(
+            f"[WnD Startup] Saltando Wide&Deep: TORCH={TORCH_DISPONIBLE}, modelo_class={WideAndDeepModel}"
+        )
 
     # --- Datos compartidos: Ratings y Catálogo ---
     if os.path.exists(ruta_ratings):
@@ -401,10 +415,11 @@ def recomendar_wnd_endpoint(user_id: int, n: int = 10):
     movie2idx = wnd_mappings["movie2idx"]
 
     if user_id not in user2idx:
-        raise HTTPException(
-            status_code=404,
-            detail=f"El usuario {user_id} no existe en los mapeos del modelo Wide&Deep.",
-        )
+        return {
+            "recomendaciones": [],
+            "modelo": "Wide&Deep",
+            "mensaje": f"El usuario {user_id} no cumplió el filtro de entrenamiento (>100 valoraciones).",
+        }
 
     u_idx = user2idx[user_id]
     pelis_vistas = set(
