@@ -4,7 +4,26 @@
 ========================================================================================
  Este archivo importa nuestra arquitectura de 'rn.py' y carga los datos para entrenarla.
 
- Importante: Usaremos toda la potencia de la GPU (mi caso una RTX 5060) si PyTorch+CUDA está instalado.
+ ¿QUÉ ES EL MODELO WIDE & DEEP?
+ Es una arquitectura híbrida de Google que combina dos formas de "pensar":
+
+ 1. LA PARTE "WIDE" (Ancha / Memoria Directa):
+    - Literalmente memoriza qué usuario ha visto qué película mediante Embeddings directos.
+    - Se encarga de las "excepciones" y correlaciones específicas ("A Juan le gusta Matrix").
+    - Aporta precisión cruda basada en el historial exacto.
+
+ 2. LA PARTE "DEEP" (Profunda / Generalización):
+    - Pasa los datos por varias capas ocultas (por ej. 64 y 32 neuronas).
+    - Permite a la IA descubrir patrones ocultos y generalizar a cosas nuevas.
+    - ("Si a Juan le gusta Matrix, a lo mejor le gusta Blade Runner porque comparten rasgos abstractos").
+
+ La red suma los instintos de ambas partes para dar la predicción final.
+
+ Importante:
+ - Si se entrena con CPU se requerira de 30 a 40 horas.
+ - Si se usa una GPU se reducira significativamente el tiempo de entrenamiento.
+ - Nuestro caso usaremos toda la potencia de la GPU (mi caso una RTX 5060) si PyTorch+CUDA está instalado.
+ - Se recomienda usar un entorno virtual con las dependencias instaladas.
 ========================================================================================
 """
 
@@ -22,6 +41,7 @@ from sklearn.model_selection import train_test_split
 # Importamos nuestra Red Neuronal local
 
 import sys, os
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 try:
     from src.networks.dl.rn_mlp import WideAndDeepModel
@@ -44,11 +64,10 @@ BATCH_SIZE = (
 EPOCHS = 10
 LEARNING_RATE = 0.001
 
-# Filtrado de datos para entrenar en CPU.
-# Reduce el dataset de 25M filas a un subconjunto manejable.
-# Con >=100 ratings/usuario y >=100 ratings/pelicula se obtienen ~42K usuarios y ~6K peliculas.
-MIN_RATINGS_USUARIO = 100
-MIN_RATINGS_PELICULA = 100
+# Hacemos recomendaciones al 100% de tus usuarios.
+MIN_RATINGS_USUARIO = 1
+# Con 5 valoraciones por peli limpiamos un pelín el ruido de pelis raras
+MIN_RATINGS_PELICULA = 5
 
 
 # -----------------------------------------------------------------------------------------
@@ -56,7 +75,10 @@ MIN_RATINGS_PELICULA = 100
 # -----------------------------------------------------------------------------------------
 class RatingsDataset(Dataset):
     """
-    Convierte nuestras columnas de Pandas al formato de tensores que espera la Tarjeta Gráfica.
+    Clase "Traductora" para PyTorch.
+    PyTorch no entiende de Tablas (Pandas DataFrames), solo entiende de "Tensores" (Matrices matemáticas).
+    Esta clase convierte nuestras columnas de Pandas (Usuarios, Películas y Notas) en Tensores que pueden
+    inyectarse a la Tarjeta Gráfica masivamente.
     """
 
     def __init__(self, users, movies, ratings):
@@ -76,6 +98,11 @@ def cargar_y_preparar_datos():
     Carga el CSV, aplica filtrado para hacerlo manejable en CPU,
     limpia los IDs para que sean secuenciales y los parte en Entrenamiento/Test.
     Los mappings guardados aqui son COHERENTES con el modelo entrenado.
+
+    ¿Por qué limpiamos los IDs?
+    En Deep Learning, si tienes el Usuario ID "10.000" pero solo tienes 50 usuarios,
+    crear una matriz de tamaño 10.000 desperdiciaría gigas de memoria.
+    Por eso "mapeamos" todo a índices consecutivos: 0, 1, 2, 3...
     """
     print("=" * 70)
     print("  MODELO 3: WIDE & DEEP (PyTorch) — Preparando Datos")
@@ -145,7 +172,10 @@ def entrenar_modelo(df_train, df_test, num_users, num_movies):
     )
 
     # 2. Instanciar y mover la red a la tarjeta gráfica
-    # Usaremos 64 y 32 capas profundas, y vectores de tamaño 32.
+    # Aquí llamamos a la arquitectura (WideAndDeepModel) que definimos en `rn_mlp.py`.
+    # - embedding_dim=32: Significa que cada usuario/película se resume en un vector de 32 números.
+    # - hidden_layers=[64, 32]: La parte "Deep" pasará por dos capas neuronales reduciéndose en embudo.
+    # El comando ".to(device)" coge el modelo y lo envía a la RAM de la Tarjeta Gráfica.
     model = WideAndDeepModel(
         num_users=num_users,
         num_movies=num_movies,
@@ -168,11 +198,13 @@ def entrenar_modelo(df_train, df_test, num_users, num_movies):
     train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
-    # 4. Matemáticas de la predicción
-    criterio = nn.MSELoss()  # Nuestro juez: Error Cuadrático Medio
-    optimizador = torch.optim.Adam(
-        model.parameters(), lr=LEARNING_RATE
-    )  # Nuestro ajustador de pesos
+    # 4. Matemáticas de la predicción (Función de Pérdida y Optimizador)
+    # MSELoss: Compara la predicción con la realidad usando Error Cuadrático Medio.
+    criterio = nn.MSELoss()
+
+    # Adam: Es el "Mecánico" que ajustará las tuercas (pesos) de la red neuronal basándose en el error.
+    # El Learning Rate (0.001) define qué tan bruscos son los giros de tuerca al aprender.
+    optimizador = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
     print(f"\n  Iniciando bucle Deep Learning de {EPOCHS} Epocas...")
 
@@ -189,15 +221,16 @@ def entrenar_modelo(df_train, df_test, num_users, num_movies):
             ratings = ratings.to(device)
 
             # PASO A: Pensar la predicción (Forward Pass)
+            # Pasamos los IDs a la red para que dé su opinión (nota esperada)
             predicciones = model(users, movies)
 
-            # PASO B: Ver cuánto nos hemos equivocado (Pérdida)
+            # PASO B: Ver cuánto nos hemos equivocado (Pérdida cruzada / Loss)
             loss = criterio(predicciones, ratings)
 
             # PASO C: Aprender (Ajustar pesos hacia atrás / Backpropagation)
-            optimizador.zero_grad()  # Limpiar memoria de la época anterior
-            loss.backward()  # Calcular ajuste matemático
-            optimizador.step()  # Aplicar el ajuste a las neuronas
+            optimizador.zero_grad()  # 1. Limpiamos la memoria de derivadas del paso anterior
+            loss.backward()  # 2. Cálculo matemático de cómo deberian modificarse los pesos
+            optimizador.step()  # 3. El optimizador (Adam) cambia efectivamente las redes neuronales
 
             # Acumulamos el error total de toda la época
             total_loss += loss.item() * len(ratings)
