@@ -21,25 +21,34 @@ from sklearn.model_selection import train_test_split
 
 # Importamos nuestra Red Neuronal local
 
-from src.networks.dl.rn_mlp import WideAndDeepModel
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+try:
+    from src.networks.dl.rn_mlp import WideAndDeepModel
+except ImportError:
+    from networks.dl.rn_mlp import WideAndDeepModel
 
 # -----------------------------------------------------------------------------------------
 # CONFIGURACIÓN GLOBAL
 # -----------------------------------------------------------------------------------------
 ruta_ratings = "src/data/ready/ratings_finales_ia.csv"
-ruta_modelo = "src/models/jj/modelo_3_wnd.pth"  # Formato oficial de PyTorch para pesajes
-ruta_mapeos = (
-    "src/models/jj/wnd_mappings.pkl"  # Necesario para recordar qué ID real es cada vector
+ruta_modelo = (
+    "src/models/jj/modelo_3_wnd.pth"  # Formato oficial de PyTorch para pesajes
 )
+ruta_mapeos = "src/models/jj/wnd_mappings.pkl"  # Necesario para recordar qué ID real es cada vector
 
 # Parámetros del Deep Learning (Hiperparámetros)
 BATCH_SIZE = (
     4096  # Cuántas valoraciones procesamos de golpe. Las GPU aman los lotes grandes.
 )
-EPOCHS = 10  # Pasadas completas por todo el dataset de entrenamiento.
-LEARNING_RATE = (
-    0.001  # Tasa de aprendizaje moderada para evitar explosión de gradientes.
-)
+EPOCHS = 10
+LEARNING_RATE = 0.001
+
+# Filtrado de datos para entrenar en CPU.
+# Reduce el dataset de 25M filas a un subconjunto manejable.
+# Con >=100 ratings/usuario y >=100 ratings/pelicula se obtienen ~42K usuarios y ~6K peliculas.
+MIN_RATINGS_USUARIO = 100
+MIN_RATINGS_PELICULA = 100
 
 
 # -----------------------------------------------------------------------------------------
@@ -64,8 +73,9 @@ class RatingsDataset(Dataset):
 
 def cargar_y_preparar_datos():
     """
-    Carga el CSV, limpia los IDs para que sean secuenciales (exigencia matemática
-    de los Embeddings en Deep Learning) y los parte en Entrenamiento/Test.
+    Carga el CSV, aplica filtrado para hacerlo manejable en CPU,
+    limpia los IDs para que sean secuenciales y los parte en Entrenamiento/Test.
+    Los mappings guardados aqui son COHERENTES con el modelo entrenado.
     """
     print("=" * 70)
     print("  MODELO 3: WIDE & DEEP (PyTorch) — Preparando Datos")
@@ -73,9 +83,19 @@ def cargar_y_preparar_datos():
 
     print(f"\n  Leyendo {ruta_ratings}...")
     df = pd.read_csv(ruta_ratings)
+    print(f"  -> Filas en bruto: {len(df):,}")
 
-    # IMPORTANTE: nn.Embedding(N) necesita índices exactos de 0 a (N-1).
-    # Como tmdb_id y userId no son necesariamente secuenciales, creamos un Diccionario Traductor.
+    # --- FILTRADO para CPU ---
+    print(
+        f"\n  Filtrando (usuario>={MIN_RATINGS_USUARIO} ratings, pelicula>={MIN_RATINGS_PELICULA} ratings)..."
+    )
+    conteo_u = df.groupby("userId").size()
+    df = df[df["userId"].isin(conteo_u[conteo_u >= MIN_RATINGS_USUARIO].index)]
+    conteo_m = df.groupby("tmdb_id").size()
+    df = df[df["tmdb_id"].isin(conteo_m[conteo_m >= MIN_RATINGS_PELICULA].index)]
+    print(f"  -> Filas tras filtro: {len(df):,}")
+
+    # IMPORTANTE: nn.Embedding(N) necesita indices exactos de 0 a (N-1).
     print("\n  Creando indices continuos (Mapeos) para la Red Neuronal...")
     user_ids = df["userId"].unique()
     movie_ids = df["tmdb_id"].unique()
@@ -222,11 +242,11 @@ def entrenar_modelo(df_train, df_test, num_users, num_movies):
     rmse_final = (test_loss / len(test_dataset)) ** 0.5
     mae_final = test_mae / len(test_dataset)
 
-    print(f"\n  ╔══════════════════════════════════════╗")
+    print(f"\n╔══════════════════════════════════════╗")
     print(f"  ║  RESULTADOS DE WIDE & DEEP           ║")
     print(f"  ╠══════════════════════════════════════╣")
-    print(f"  ║  RMSE: {rmse_final:.4f}                        ║")
-    print(f"  ║  MAE:  {mae_final:.4f}                        ║")
+    print(f"  ║  RMSE: {rmse_final:.4f}              ║")
+    print(f"  ║  MAE:  {mae_final:.4f}               ║")
     print(f"  ╚══════════════════════════════════════╝")
 
     # 5. Guardado del cerebro entrenado (.pth para PyTorch, donde están los pesos)

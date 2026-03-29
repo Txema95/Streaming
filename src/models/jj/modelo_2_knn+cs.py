@@ -231,7 +231,7 @@ if __name__ == "__main__":
             )
             if len(titulo) > 42:
                 titulo = titulo[:39] + "..."
-            print(f"  {i:<5} {titulo:<45} ⭐ {rec['predicted_rating']}")
+            print(f"  {i:<5} {titulo:<45} estrellas {rec['predicted_rating']}")
     except:
         for i, rec in enumerate(recomendaciones, 1):
             print(f"  {i}. ID={rec['tmdb_id']} | Nota: {rec['predicted_rating']}")

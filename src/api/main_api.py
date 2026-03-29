@@ -9,6 +9,28 @@ import bcrypt
 import pickle
 import os
 
+# --- Wide & Deep: importamos PyTorch si está disponible (opcional) ---
+try:
+    import torch
+
+    try:
+        from networks.dl.rn_mlp import WideAndDeepModel
+        print("[WnD] WideAndDeepModel importado desde 'networks.dl.rn_mlp'")
+    except ImportError as e1:
+        print(f"[WnD] Import 1 fallido: {e1}")
+        try:
+            from src.networks.dl.rn_mlp import WideAndDeepModel
+            print("[WnD] WideAndDeepModel importado desde 'src.networks.dl.rn_mlp'")
+        except ImportError as e2:
+            print(f"[WnD] Import 2 fallido: {e2} -> WideAndDeepModel = None")
+            WideAndDeepModel = None
+    TORCH_DISPONIBLE = True
+    print(f"[WnD] PyTorch {torch.__version__} disponible. WideAndDeepModel={'OK' if WideAndDeepModel else 'None'}")
+except ImportError as e:
+    print(f"[WnD] PyTorch no instalado: {e}")
+    TORCH_DISPONIBLE = False
+    WideAndDeepModel = None
+
 app = FastAPI()
 
 
@@ -137,39 +159,85 @@ modelo_svd = None
 df_ratings_ia = None
 df_catalogo = None
 
+# --- KNN + Cosine Similarity ---
+ruta_modelo_knn = "src/models/jj/modelo_2_knn_cs.pkl"
+modelo_knn = None
+
+# --- Wide & Deep (PyTorch) ---
+ruta_modelo_wnd = "src/models/jj/modelo_3_wnd.pth"
+ruta_mapeos_wnd = "src/models/jj/wnd_mappings.pkl"
+modelo_wnd = None
+wnd_mappings = None
+
 
 @app.on_event("startup")
 def cargar_modelo_al_arrancar():
     """
     Se ejecuta automáticamente cuando FastAPI arranca.
-    Carga el modelo SVD y los DataFrames necesarios en memoria para no tener que
-    leerlos del disco en cada petición (sería lentísimo con 33M de filas).
+    Carga los 3 modelos de IA y los DataFrames necesarios en memoria.
     """
     global modelo_svd, df_ratings_ia, df_catalogo
+    global modelo_knn, modelo_wnd, wnd_mappings
 
-    # Cargar el modelo SVD entrenado
+    # --- Modelo 1: SVD ---
     if os.path.exists(ruta_modelo_svd):
         with open(ruta_modelo_svd, "rb") as f:
             modelo_svd = pickle.load(f)
-        print("Modelo SVD cargado correctamente al arrancar el Backend.")
+        print("Modelo SVD cargado correctamente.")
     else:
-        print(
-            f"AVISO: No se encontró el modelo SVD en {ruta_modelo_svd}. El endpoint /recomendar no funcionará."
-        )
+        print(f"No se encontró el modelo SVD en {ruta_modelo_svd}")
 
-    # Cargar los ratings para saber qué películas ha visto cada usuario
+    # --- Modelo 2: KNN + Cosine Similarity ---
+    if os.path.exists(ruta_modelo_knn):
+        with open(ruta_modelo_knn, "rb") as f:
+            modelo_knn = pickle.load(f)
+        print("Modelo KNN+Cosine cargado correctamente.")
+    else:
+        print(f"No se encontró el modelo KNN en {ruta_modelo_knn}")
+
+    # --- Modelo 3: Wide & Deep (PyTorch) ---
+    print(f"[WnD Startup] TORCH_DISPONIBLE={TORCH_DISPONIBLE}, WideAndDeepModel={WideAndDeepModel}")
+    if TORCH_DISPONIBLE and WideAndDeepModel is not None:
+        if os.path.exists(ruta_modelo_wnd) and os.path.exists(ruta_mapeos_wnd):
+            try:
+                with open(ruta_mapeos_wnd, "rb") as f:
+                    wnd_mappings = pickle.load(f)
+                num_users = len(wnd_mappings["user2idx"])
+                num_movies = len(wnd_mappings["movie2idx"])
+                print(f"[WnD Startup] Mappings: {num_users} usuarios, {num_movies} peliculas")
+                modelo_wnd = WideAndDeepModel(
+                    num_users=num_users,
+                    num_movies=num_movies,
+                    embedding_dim=32,
+                    hidden_layers=[64, 32],
+                )
+                modelo_wnd.load_state_dict(
+                    torch.load(
+                        ruta_modelo_wnd, map_location=torch.device("cpu"), weights_only=True
+                    )
+                )
+                modelo_wnd.eval()
+                print("Modelo Wide&Deep cargado correctamente.")
+            except Exception as e:
+                print(f"[WnD Startup] ERROR al cargar el modelo: {e}")
+                modelo_wnd = None
+        else:
+            print(f"[WnD Startup] Archivos no encontrados: .pth existe={os.path.exists(ruta_modelo_wnd)}, .pkl existe={os.path.exists(ruta_mapeos_wnd)}")
+    else:
+        print(f"[WnD Startup] Saltando Wide&Deep: TORCH={TORCH_DISPONIBLE}, modelo_class={WideAndDeepModel}")
+
+    # --- Datos compartidos: Ratings y Catálogo ---
     if os.path.exists(ruta_ratings):
         df_ratings_ia = pd.read_csv(ruta_ratings)
         print(f"Ratings cargados: {len(df_ratings_ia):,} filas.")
     else:
-        print(f"AVISO: No se encontró {ruta_ratings}")
+        print(f"No se encontró {ruta_ratings}")
 
-    # Cargar el catálogo para enriquecer las recomendaciones con títulos y posters
     if os.path.exists(ruta_catalogo):
         df_catalogo = pd.read_csv(ruta_catalogo, on_bad_lines="skip", engine="python")
         print(f"Catálogo cargado: {len(df_catalogo):,} películas.")
     else:
-        print(f"AVISO: No se encontró {ruta_catalogo}")
+        print(f"No se encontró {ruta_catalogo}")
 
 
 @app.get("/recomendar/{user_id}")
@@ -238,3 +306,136 @@ def recomendar_peliculas(user_id: int, n: int = 10):
                 rec["vote_average"] = 0.0
 
     return {"recomendaciones": top_n}
+
+
+##############################################################################################
+#  Helper: Enriquecer recomendaciones con datos del catálogo
+##############################################################################################
+
+
+def enriquecer_recomendaciones(top_n):
+    """Añade título, poster, sinopsis y nota real del catálogo a cada recomendación."""
+    if df_catalogo is None:
+        return
+    for rec in top_n:
+        match = df_catalogo[df_catalogo["tmdb_id"] == rec["tmdb_id"]]
+        if not match.empty:
+            fila = match.iloc[0]
+            rec["titulo"] = str(fila.get("titulo", "Sin Título"))
+            rec["poster_path"] = str(fila.get("poster_path", ""))
+            rec["overview"] = str(fila.get("overview", "Sin sinopsis disponible."))
+            rec["vote_average"] = float(fila.get("vote_average", 0))
+        else:
+            rec["titulo"] = f"Película #{rec['tmdb_id']}"
+            rec["poster_path"] = ""
+            rec["overview"] = "Sin sinopsis disponible."
+            rec["vote_average"] = 0.0
+
+
+##############################################################################################
+#  Recomendación Modelo KNN + Cosine Similarity
+##############################################################################################
+
+
+@app.get("/recomendar/knn/{user_id}")
+def recomendar_knn(user_id: int, n: int = 10):
+    """Endpoint de recomendaciones usando KNN + Cosine Similarity (Modelo 2)."""
+    if modelo_knn is None:
+        raise HTTPException(
+            status_code=503, detail="El modelo KNN no está cargado. Entrénalo primero."
+        )
+    if df_ratings_ia is None:
+        raise HTTPException(
+            status_code=503, detail="Los datos de ratings no están disponibles."
+        )
+
+    pelis_vistas = set(
+        df_ratings_ia[df_ratings_ia["userId"] == user_id]["tmdb_id"].tolist()
+    )
+    todas = (
+        set(df_catalogo["tmdb_id"].unique())
+        if df_catalogo is not None
+        else set(df_ratings_ia["tmdb_id"].unique())
+    )
+    pelis_no_vistas = todas - pelis_vistas
+
+    if not pelis_no_vistas:
+        return {
+            "recomendaciones": [],
+            "modelo": "KNN+Cosine",
+            "mensaje": "Este usuario ya ha valorado todas las películas.",
+        }
+
+    predicciones = []
+    for tmdb_id in pelis_no_vistas:
+        pred = modelo_knn.predict(user_id, tmdb_id)
+        predicciones.append(
+            {"tmdb_id": int(tmdb_id), "predicted_rating": round(pred.est, 2)}
+        )
+
+    predicciones.sort(key=lambda x: x["predicted_rating"], reverse=True)
+    top_n = predicciones[:n]
+    enriquecer_recomendaciones(top_n)
+
+    return {"recomendaciones": top_n, "modelo": "KNN+Cosine"}
+
+
+##############################################################################################
+#  Recomendación Modelo Wide & Deep (PyTorch)
+##############################################################################################
+
+
+@app.get("/recomendar/wnd/{user_id}")
+def recomendar_wnd_endpoint(user_id: int, n: int = 10):
+    """Endpoint de recomendaciones usando Wide & Deep Neural Network (Modelo 3)."""
+    if modelo_wnd is None or wnd_mappings is None:
+        raise HTTPException(
+            status_code=503, detail="El modelo Wide&Deep no está cargado."
+        )
+    if df_ratings_ia is None:
+        raise HTTPException(
+            status_code=503, detail="Los datos de ratings no están disponibles."
+        )
+
+    user2idx = wnd_mappings["user2idx"]
+    movie2idx = wnd_mappings["movie2idx"]
+
+    if user_id not in user2idx:
+        raise HTTPException(
+            status_code=404,
+            detail=f"El usuario {user_id} no existe en los mapeos del modelo Wide&Deep.",
+        )
+
+    u_idx = user2idx[user_id]
+    pelis_vistas = set(
+        df_ratings_ia[df_ratings_ia["userId"] == user_id]["tmdb_id"].tolist()
+    )
+
+    candidatas = [
+        (tid, midx) for tid, midx in movie2idx.items() if tid not in pelis_vistas
+    ]
+    if not candidatas:
+        return {
+            "recomendaciones": [],
+            "modelo": "Wide&Deep",
+            "mensaje": "Este usuario ya ha valorado todas las películas.",
+        }
+
+    tmdb_ids, movie_indices = zip(*candidatas)
+    user_tensor = torch.tensor([u_idx] * len(movie_indices), dtype=torch.long)
+    movie_tensor = torch.tensor(list(movie_indices), dtype=torch.long)
+
+    with torch.no_grad():
+        preds = modelo_wnd(user_tensor, movie_tensor)
+        preds = torch.clamp(preds, 0.5, 5.0)
+
+    predicciones = [
+        {"tmdb_id": int(tid), "predicted_rating": round(preds[i].item(), 2)}
+        for i, tid in enumerate(tmdb_ids)
+    ]
+
+    predicciones.sort(key=lambda x: x["predicted_rating"], reverse=True)
+    top_n = predicciones[:n]
+    enriquecer_recomendaciones(top_n)
+
+    return {"recomendaciones": top_n, "modelo": "Wide&Deep"}

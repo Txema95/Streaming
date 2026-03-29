@@ -98,6 +98,19 @@ else:
     # --- BUSCADOR GLOBAL ---
     search_query = st.text_input("Busca por título o palabras clave...")
 
+    # --- SELECTOR DE MODELO DE IA ---
+    modelo_ia = st.sidebar.selectbox(
+        "Motor de Recomendación",
+        ["SVD (Rápido)", "KNN + Cosine (Explicable)", "Wide & Deep (Profundo)"],
+        index=0,
+    )
+    mapa_endpoints = {
+        "SVD (Rápido)": "recomendar",
+        "KNN + Cosine (Explicable)": "recomendar/knn",
+        "Wide & Deep (Profundo)": "recomendar/wnd",
+    }
+    endpoint_ia = mapa_endpoints[modelo_ia]
+
     # --- CARGA DE DATOS ---
     @st.cache_data
     def load_catalog_data():
@@ -170,7 +183,7 @@ else:
     # =====================================================================================
     # Renderiza las recomendaciones IA dentro de una pestaña
     # =====================================================================================
-    def render_recomendaciones_ia(key_prefix="ia"):
+    def render_recomendaciones_ia(key_prefix="ia", endpoint="recomendar"):
         """Llama al Backend y pinta las recomendaciones del modelo SVD."""
         user_id_ia = usuario.get("id_usuario", None)
         if not user_id_ia:
@@ -179,7 +192,7 @@ else:
 
         try:
             resp_ia = requests.get(
-                f"http://localhost:8000/recomendar/{user_id_ia}", params={"n": 8}
+                f"http://localhost:8000/{endpoint}/{user_id_ia}", params={"n": 8}
             )
             if resp_ia.status_code == 200:
                 recomendaciones = resp_ia.json().get("recomendaciones", [])
@@ -223,7 +236,7 @@ else:
     # =====================================================================================
     # Contenido de una pestaña (recomendaciones + top rated + más vistos)
     # =====================================================================================
-    def render_tab_content(df, search, is_movie=True):
+    def render_tab_content(df, search, is_movie=True, endpoint_ia="recomendar"):
         """Dibuja las 3 secciones dentro de una pestaña: IA, Top Rated, Más Visto."""
         prefix = "mov" if is_movie else "tv"
         date_col = "fecha_estreno" if is_movie else "first_air_date"
@@ -248,7 +261,7 @@ else:
         # --- Sección 1: Recomendaciones IA ---
         st.subheader("Recomendado para ti")
         if is_movie:
-            render_recomendaciones_ia(key_prefix=f"{prefix}_ia")
+            render_recomendaciones_ia(key_prefix=f"{prefix}_ia", endpoint=endpoint_ia)
         else:
             st.info(
                 "Las recomendaciones de series están en desarrollo. De momento disfruta del catálogo."
@@ -286,7 +299,11 @@ else:
     tab_movies, tab_shows = st.tabs(["Películas", "Series"])
 
     with tab_movies:
-        render_tab_content(df_movies, search_query, is_movie=True)
+        render_tab_content(
+            df_movies, search_query, is_movie=True, endpoint_ia=endpoint_ia
+        )
 
     with tab_shows:
-        render_tab_content(df_shows, search_query, is_movie=False)
+        render_tab_content(
+            df_shows, search_query, is_movie=False, endpoint_ia=endpoint_ia
+        )
