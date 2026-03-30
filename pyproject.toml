@@ -15,8 +15,10 @@ dependencies = [
     "numpy<2",
     "pydantic>=2.12.5",
     "requests>=2.32.5",
+    "scikit-learn>=1.8.0",
     "scikit-surprise>=1.1.4",
     "seaborn>=0.13.2",
     "streamlit>=1.55.0",
+    "torch>=2.11.0",
     "uvicorn>=0.41.0",
 ]
