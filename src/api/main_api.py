@@ -128,7 +128,7 @@ def login(datos: LoginRequest):
 ##############################################################################################
 
 # Ruta al modelo SVD entrenado y al CSV de ratings, para saber qué pelis ya ha visto el usuario.
-ruta_modelo_svd = "src/models/modelo_1_SVD.pkl"
+ruta_modelo_svd = "src/models/jj/modelo_1_SVD.pkl"
 ruta_ratings = "src/data/ready/ratings_finales_ia.csv"
 ruta_catalogo = "src/data/ready/dataset_final_movies.csv"
 
