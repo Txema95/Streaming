@@ -20,7 +20,7 @@ cookies = cookie_manager.get_all()
 # Si no detectamos nada, pausamos 0.5 segundos y reintentamos.
 if not cookies:
     time.sleep(0.5)
-    cookies = cookie_manager.get_all()
+    #cookies = cookie_manager.get_all()
 
 # Buscamos específicamente si dentro de sus cookies existe la nuestra, llamada "disney_admin_session"
 try:
