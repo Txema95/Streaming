@@ -112,6 +112,7 @@ def train_matrix_factorization(user_item_matrix, n_components=50, force_train=Fa
 # Ejecutamos el entrenamiento (n_components=50 es un estándar balanceado)
 model_svd, P, Q = train_matrix_factorization(user_item_matrix, n_components=50)
 
+
 print(f"Dimensiones de Matriz de Usuarios (P): {P.shape}")
 print(f"Dimensiones de Matriz de Ítems (Q): {Q.shape}")
 
