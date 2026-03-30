@@ -12,6 +12,20 @@
                 "PYTHONPATH": "${workspaceFolder}/src"
             },
             "subProcess": true  // 👈 CRITICO: Permite depurar los procesos hijos
+        },
+        {
+            "name": "Run main.py with Uvicorn",
+            "type": "python",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "main:app",      // 'app' es tu instancia de FastAPI/ASGI
+                "--reload",
+                "--host", "127.0.0.1",
+                "--port", "8000"
+            ],
+            "justMyCode": true,
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }

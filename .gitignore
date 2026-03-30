@@ -226,3 +226,5 @@ machine_check/
 # Información nuestra
 info/
 
+#No subir fichero de cache
+src/data/cache/*
